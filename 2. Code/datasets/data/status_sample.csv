@@ -1,0 +1,8 @@
+statusId,name,isClosed
+sts_001,Open,false
+sts_002,In Progress,false
+sts_003,Waiting for User,false
+sts_004,Under Investigation,false
+sts_005,Resolved,true
+sts_006,Closed,true
+sts_007,Cancelled,true

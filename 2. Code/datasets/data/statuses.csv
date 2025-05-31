@@ -1,4 +1,0 @@
-statusId,name,description,isActive
-8abf4d70,Open,Ticket is open,True
-f6a6ce6d,In Progress,Ticket is in progress,True
-c8d34589,Closed,Ticket is closed,False

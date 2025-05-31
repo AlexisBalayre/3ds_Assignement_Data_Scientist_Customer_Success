@@ -1,0 +1,11 @@
+userId,username,firstName,lastName,email,role,isActive
+usr_001,marie.dubois,Marie,Dubois,marie.dubois@3ds.com,employee,true
+usr_002,jean.martin,Jean,Martin,jean.martin@3ds.com,agent,true
+usr_003,sarah.chen,Sarah,Chen,sarah.chen@3ds.com,employee,true
+usr_004,carlos.rodriguez,Carlos,Rodriguez,carlos.rodriguez@3ds.com,employee,true
+usr_005,anna.kowalski,Anna,Kowalski,anna.kowalski@3ds.com,agent,true
+usr_006,thomas.mueller,Thomas,Mueller,thomas.mueller@3ds.com,manager,true
+usr_007,lisa.thompson,Lisa,Thompson,lisa.thompson@3ds.com,employee,true
+usr_008,david.kim,David,Kim,david.kim@3ds.com,agent,true
+usr_009,sophie.laurent,Sophie,Laurent,sophie.laurent@3ds.com,employee,true
+usr_010,michael.roberts,Michael,Roberts,michael.roberts@3ds.com,manager,true

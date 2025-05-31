@@ -1,6 +1,0 @@
-articleId,title,content,createdDate,updatedDate,viewCount,isPublished,authorUserId,categoryId
-3c75af1d,Article 1,Knowledge base content 1,2023-05-22T01:42:18.549786,2023-06-06T01:42:18.549786,474,False,06ff7a2b,cafe62c5
-c8bb6e0d,Article 2,Knowledge base content 2,2021-06-04T03:33:55.980022,2021-06-27T03:33:55.980022,407,True,51c748d4,cafe62c5
-b91f0e5b,Article 3,Knowledge base content 3,2023-04-02T02:24:31.548867,2023-05-12T02:24:31.548867,213,True,ba11a7fe,cafe62c5
-a4b43ddc,Article 4,Knowledge base content 4,2022-12-10T03:30:30.353250,2023-03-15T03:30:30.353250,34,False,aa47537d,cafe62c5
-fb4d4b1a,Article 5,Knowledge base content 5,2020-03-02T18:52:32.970814,2020-05-31T18:52:32.970814,363,True,51c748d4,42e06c0d

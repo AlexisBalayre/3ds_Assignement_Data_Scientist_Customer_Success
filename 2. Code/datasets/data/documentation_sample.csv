@@ -1,0 +1,11 @@
+articleId,title,summary,referenceUrl,categoryId
+doc_001,Getting Started with Aura,Complete guide for new Aura users including login and basic commands,https://intranet.3ds.com/docs/aura-getting-started,cat_005
+doc_002,Aura Login Troubleshooting,Step-by-step guide to resolve common login issues with Aura,https://intranet.3ds.com/docs/aura-login-help,cat_001
+doc_003,Improving Aura Response Quality,Tips for asking better questions to get more accurate responses from Aura,https://intranet.3ds.com/docs/aura-best-practices,cat_002
+doc_004,Aura Feature Overview,Comprehensive list of Aura's capabilities and available commands,https://intranet.3ds.com/docs/aura-features,cat_003
+doc_005,Aura System Requirements,Technical requirements and browser compatibility for Aura,https://intranet.3ds.com/docs/aura-requirements,cat_006
+doc_006,Reporting Aura Issues,How to properly report bugs or technical issues with Aura,https://intranet.3ds.com/docs/aura-bug-reporting,cat_007
+doc_007,Aura API Integration Guide,Developer guide for integrating with Aura's API,https://intranet.3ds.com/docs/aura-api,cat_004
+doc_008,Aura Training Resources,Collection of training materials and video tutorials for Aura,https://intranet.3ds.com/docs/aura-training,cat_005
+doc_009,Aura Performance Optimization,Guide to optimize Aura performance and response times,https://intranet.3ds.com/docs/aura-performance,cat_006
+doc_010,Account Setup Guide,Instructions for setting up new user accounts in 3DS systems,https://intranet.3ds.com/docs/account-setup,cat_009

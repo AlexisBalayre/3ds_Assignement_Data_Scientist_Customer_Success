@@ -1,0 +1,6 @@
+priorityId,name,level
+pri_001,Low,1
+pri_002,Medium,2
+pri_003,High,3
+pri_004,Critical,4
+pri_005,Emergency,5

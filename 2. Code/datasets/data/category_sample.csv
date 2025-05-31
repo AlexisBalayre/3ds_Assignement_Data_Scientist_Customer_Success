@@ -1,0 +1,10 @@
+categoryId,name,description
+cat_001,Aura Access,Issues with accessing or logging into Aura
+cat_002,Aura Responses,Problems with Aura's answers or response quality
+cat_003,Aura Features,Feature requests or questions about Aura capabilities
+cat_004,Aura Integration,Issues with Aura integration with other 3DS systems
+cat_005,Aura Training,Training requests or help with using Aura effectively
+cat_006,Aura Performance,Performance issues or slow responses from Aura
+cat_007,Aura Bug Report,Bug reports and technical issues with Aura
+cat_008,Account Management,User account creation or modification requests
+cat_009,Documentation,Requests for documentation or knowledge base updates
