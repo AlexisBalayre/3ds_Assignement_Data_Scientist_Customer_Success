@@ -1,45 +1,30 @@
 erDiagram
-    Organization {
-        string orgId PK
-        string name
-        datetime creationDate
-    }
-
     User {
         string userId PK
         string username
-        string lastName
         string firstName
+        string lastName
         string email
-        string telephone
         string role
-        string company
-        datetime accountCreationDate
-        datetime lastLoginDate
         boolean isActive
-        string timezone
-        string orgId FK
     }
 
     Status {
         string statusId PK
         string name
-        string description
-        boolean isActive
+        boolean isClosed
     }
 
     Priority {
         string priorityId PK
         string name
         int level
-        int slaHours
     }
 
     Category {
         string categoryId PK
         string name
         string description
-        string autoAssignmentRules
     }
 
     Ticket {
@@ -47,8 +32,7 @@ erDiagram
         string title
         text description
         datetime creationDate
-        datetime lastUpdateDate
-        datetime dueDate
+        datetime resolvedDate
         text resolutionSummary
         string createdByUserId FK
         string assignedToUserId FK
@@ -61,70 +45,29 @@ erDiagram
         string commentId PK
         text content
         datetime creationDate
-        boolean isInternal
         boolean isSolution
         string ticketId FK
         string authorUserId FK
+        string articleId FK
     }
 
-    KnowledgeArticle {
+    DocumentationArticle {
         string articleId PK
         string title
-        text content
-        datetime createdDate
-        datetime updatedDate
-        int viewCount
-        boolean isPublished
-        string authorUserId FK
+        text summary
+        string referenceUrl
         string categoryId FK
     }
 
-    Attachment {
-        string attachmentId PK
-        string filename
-        int fileSize
-        string fileType
-        datetime uploadDate
-        string storagePath
-        string ticketId FK
-    }
-
-    TicketKnowledgeRef {
-        string ticketId FK
-        string articleId FK
-    }
-
-    CommentKnowledgeRef {
-        string commentId FK
-        string articleId FK
-    }
-
-    TicketRelation {
-        string sourceTicketId FK
-        string targetTicketId FK
-        string relationType
-    }
-
     %% Relationships
-    Organization ||--o{ User : "BELONGS_TO"
-    User ||--o{ Ticket : "CREATES"
-    User ||--o{ Ticket : "ASSIGNED_TO"
-    User ||--o{ Comment : "WRITES"
-    User ||--o{ KnowledgeArticle : "AUTHORS"
-    
-    Status ||--o{ Ticket : "HAS_STATUS"
-    Priority ||--o{ Ticket : "HAS_PRIORITY"
-    Category ||--o{ Ticket : "BELONGS_TO_CATEGORY"
-    Category ||--o{ KnowledgeArticle : "BELONGS_TO_CATEGORY"
-    
-    Ticket ||--o{ Comment : "CONTAINS"
-    Ticket ||--o{ Attachment : "HAS_ATTACHMENT"
-    
-    Ticket ||--o{ TicketKnowledgeRef : "REFERENCES"
-    KnowledgeArticle ||--o{ TicketKnowledgeRef : "REFERENCED_BY"
-    
-    Comment ||--o{ CommentKnowledgeRef : "REFERENCES"
-    KnowledgeArticle ||--o{ CommentKnowledgeRef : "REFERENCED_BY"
-    
-    Ticket ||--o{ TicketRelation : "SOURCE"
-    Ticket ||--o{ TicketRelation : "TARGET"
+    User     ||--o{ Ticket   : "SUBMITS"
+    User     ||--o{ Ticket   : "ASSIGNED_TO"
+    User     ||--o{ Comment  : "POSTS"
+
+    Status   ||--o{ Ticket   : "HAS_STATUS"
+    Priority ||--o{ Ticket   : "HAS_PRIORITY"
+    Category ||--o{ Ticket   : "HAS_CATEGORY"
+    Category ||--o{ DocumentationArticle : "HAS_CATEGORY"
+
+    Ticket ||--o{ Comment  : "CONTAINS"
+    DocumentationArticle ||--o{ Comment : "REFERENCED_BY"
