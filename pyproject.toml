@@ -14,7 +14,8 @@ dependencies = [
     "llama-index (>=0.12.38,<0.13.0)",
     "llama-index-llms-ollama (>=0.6.0,<0.7.0)",
     "llama-index-embeddings-ollama (>=0.6.0,<0.7.0)",
-    "streamlit (>=1.45.1,<2.0.0)"
+    "streamlit (>=1.45.1,<2.0.0)",
+    "ollama (>=0.5.1,<0.6.0)"
 ]
 
 
