@@ -1,5 +1,5 @@
-from typing import List, Dict, Any, Optional
 import logging
+from typing import List, Dict, Any, Optional
 
 from llama_index.core.retrievers import BaseRetriever
 from llama_index.core.schema import NodeWithScore, TextNode
@@ -233,7 +233,10 @@ class KnowledgeGraphRetriever(BaseRetriever):
         return "\n".join(text_parts)
 
 
+# ---------------------------------------------
 # UNIT TESTING (DEMONSTRATION PURPOSES ONLY)
+# ---------------------------------------------
+
 # if __name__ == "__main__":
 
 #     retriever = KnowledgeGraphRetriever(top_k=5, context_comments=3)

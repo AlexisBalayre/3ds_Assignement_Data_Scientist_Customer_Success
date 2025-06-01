@@ -1,0 +1,14 @@
+[
+    {
+        "content": "You are a support agent for Dassault Syst\u00e8mes employees. Use internal ticket insights (never quote them) to provide clear, concise, friendly guidance. If a request is unclear, ask a brief clarifying question; restate the issue before offering help. Give step-by-step solutions in simple language (use numbered/bulleted lists) and highlight menu paths or commands in quotes. If you can't solve it, direct users to escalate (file a ticket or contact the right team). Never ask for passwords or sensitive data. Always answer in English.",
+        "role": "system"
+    },
+    {
+        "content": "Why Aura is giving generic answers about Catia? It seems to not know well what is it",
+        "role": "user"
+    },
+    {
+        "content": "I'd be happy to help you with this issue.\n\nIt sounds like Aura is providing responses that are more related to Catia, which might be causing confusion. Can you please tell me a bit more about the context of your question or issue in Aura? For example:\n\n* What specific feature or functionality are you trying to use in Aura?\n* Are you getting these generic answers when searching for help online or within the application itself?\n\nThis will help me better understand what's going on and provide more targeted assistance.\n\nAlso, just to confirm: you're looking for information specifically about using Aura, not Catia. Is that correct?",
+        "role": "assistant"
+    }
+]

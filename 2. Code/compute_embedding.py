@@ -3,7 +3,7 @@ from pathlib import Path
 from typing import List
 
 import pandas as pd
-from llama_index.embeddings.ollama import OllamaEmbedding
+from openai import OpenAI
 
 from config import Config
 
@@ -14,45 +14,58 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
-def get_embedding_model(config: Config) -> OllamaEmbedding:
+def get_embedding_model(config: Config) -> OpenAI:
     """
-    Initialize and return an OllamaEmbedding model instance.
+    Initialize and return an OpenAI client configured for Ollama.
     """
-    return OllamaEmbedding(
-        model_name=config.ollama_embed_model,
+    return OpenAI(
         base_url=config.ollama_base_url,
+        api_key="ollama",
     )
 
 
-def compute_embedding(
-    text: str, embedding_model: OllamaEmbedding = None
-) -> List[float]:
+def compute_embedding(text: str, embedding_model: OpenAI = None) -> List[float]:
     """
-    Compute embedding for a single text string.
+    Compute embedding for a single text string using OpenAI client with Ollama.
 
     Args:
         text (str): Text to embed.
-        embedding_model (OllamaEmbedding): Preinitialized Ollama embedding model. If None, will use the default model.
+        embedding_model (OpenAI): Preinitialized OpenAI client configured for Ollama. If None, will use the default model.
 
     Returns:
         List[float]: The embedding vector.
     """
     if embedding_model is None:
-        embedding_model = get_embedding_model(Config())
-    raw = embedding_model.get_text_embedding(text)
-    # If raw is already a list of floats, return as-is
-    if isinstance(raw, list):
-        return raw
-    # Otherwise try to convert
+        config = Config()
+        embedding_model = get_embedding_model(config)
+        model_name = config.ollama_embed_model
+    else:
+        config = Config()
+        model_name = config.ollama_embed_model
+
     try:
-        return raw.tolist()
-    except AttributeError:
-        logger.error("Unexpected embedding format: %s", type(raw))
+        response = embedding_model.embeddings.create(model=model_name, input=text)
+
+        # Extract the embedding from the response
+        embedding = response.data[0].embedding
+
+        # If embedding is already a list of floats, return as-is
+        if isinstance(embedding, list):
+            return embedding
+        # Otherwise try to convert
+        try:
+            return embedding.tolist()
+        except AttributeError:
+            logger.error("Unexpected embedding format: %s", type(embedding))
+            raise
+
+    except Exception as e:
+        logger.error("Failed to compute embedding: %s", str(e))
         raise
 
 
 def compute_embeddings_from_dataframe(
-    embedding_model: OllamaEmbedding,
+    embedding_model: OpenAI,
     df: pd.DataFrame,
     text_columns: List[str],
 ) -> pd.DataFrame:
@@ -60,7 +73,7 @@ def compute_embeddings_from_dataframe(
     Compute embeddings for specified text columns in a DataFrame.
 
     Args:
-        embedding_model (OllamaEmbedding): Preinitialized Ollama embedding model.
+        embedding_model (OpenAI): Preinitialized OpenAI client configured for Ollama.
         df (pd.DataFrame): DataFrame with text data.
         text_columns (List[str]): Columns to combine for embedding.
 
