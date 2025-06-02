@@ -2,6 +2,8 @@
 
 A support chatbot that leverages local LLMs, vector similarity search, and knowledge graphs to provide contextual assistance by finding and presenting solutions from historical support tickets.
 
+https://github.com/user-attachments/assets/136486f6-6d2f-45b3-8e92-ca87678fcaa9
+
 ## 🌟 Features
 
 - **Local LLM Integration**: Uses Ollama for privacy-preserving AI inference
