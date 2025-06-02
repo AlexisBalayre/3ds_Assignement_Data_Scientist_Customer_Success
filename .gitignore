@@ -1,3 +1,4 @@
 .DS_Store
 .env
 llm_history
+__pycache__
