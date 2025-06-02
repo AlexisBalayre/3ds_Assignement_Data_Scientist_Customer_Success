@@ -62,7 +62,7 @@ A support chatbot that leverages local LLMs, vector similarity search, and knowl
 
 ## 🚀 Installation
 
-### Option 1: Manual Setup
+###  Setup
 
 1. **Clone the repository**
 
@@ -84,6 +84,28 @@ A support chatbot that leverages local LLMs, vector similarity search, and knowl
    poetry shell
    ```
 
+3. **Create an environment file**
+
+   ```bash
+   cp exemple.env .env
+   ```
+
+4. **Set up Neo4j schema**
+
+   ```cypher
+   // Create vector index for ticket similarity search
+   CREATE VECTOR INDEX ticketsTitleDescription FOR (t:Ticket) ON (t.embedding)
+   OPTIONS {indexConfig: {
+       `vector.dimensions`: 384,
+       `vector.similarity_function`: 'cosine'
+   }}
+
+   // Create constraints
+   CREATE CONSTRAINT ticket_id IF NOT EXISTS FOR (t:Ticket) REQUIRE t.ticketId IS UNIQUE;
+   CREATE CONSTRAINT comment_id IF NOT EXISTS FOR (c:Comment) REQUIRE c.commentId IS UNIQUE;
+   CREATE CONSTRAINT user_id IF NOT EXISTS FOR (u:User) REQUIRE u.userId IS UNIQUE;
+   ```
+
 ### Configuration
 
 ```python
@@ -102,22 +124,6 @@ class Config:
     ollama_temperature = 0.0 # Lower for factual responses
     ollama_max_tokens = 1024
 ```
-
-4. **Set up Neo4j schema**
-
-   ```cypher
-   // Create vector index for ticket similarity search
-   CREATE VECTOR INDEX ticketsTitleDescription FOR (t:Ticket) ON (t.embedding)
-   OPTIONS {indexConfig: {
-       `vector.dimensions`: 384,
-       `vector.similarity_function`: 'cosine'
-   }}
-
-   // Create constraints
-   CREATE CONSTRAINT ticket_id IF NOT EXISTS FOR (t:Ticket) REQUIRE t.ticketId IS UNIQUE;
-   CREATE CONSTRAINT comment_id IF NOT EXISTS FOR (c:Comment) REQUIRE c.commentId IS UNIQUE;
-   CREATE CONSTRAINT user_id IF NOT EXISTS FOR (u:User) REQUIRE u.userId IS UNIQUE;
-   ```
 
 ## 💾 Data Setup
 
@@ -245,14 +251,14 @@ COM-002,Credentials have been reset,2024-01-15 14:20:00,true,TICK-001,USR-002,DO
 
 ```bash
 # Using Poetry (recommended)
-poetry run streamlit run main.py
+poetry run streamlit run app.py
 
 # Or activate the virtual environment first
 poetry shell
-streamlit run main.py
+streamlit run app.py
 
 # Or run directly
-poetry run python main.py
+poetry run python app.py
 ```
 
 ### Using the Chat Interface
