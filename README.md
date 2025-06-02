@@ -201,7 +201,7 @@ User ──SUBMITS──► Ticket ──HAS_STATUS──► Status
                 REFERENCED_BY◄──Comment
 ```
 
-A more detailed architecture diagram can be found in the [docs/1. Analysis/knowledge_graph_architecture_diagram.png](docs/1. Analysis/knowledge_graph_architecture_diagram.png) file.
+A more detailed architecture diagram can be found in the [docs/1. Analysis/knowledge_graph_architecture_diagram.png](docs/1.%20Analysis/knowledge_graph_architecture_diagram.png) file.
 
 ### Sample Data Structure
 
@@ -358,6 +358,3 @@ This project was built using knowledge and inspiration from:
 - [LlamaIndex Documentation](https://docs.llamaindex.ai/)
 - [Streamlit Documentation](https://docs.streamlit.io/)
 
----
-
-**Built with ❤️ for better support experiences**
