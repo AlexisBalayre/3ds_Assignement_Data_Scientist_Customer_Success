@@ -62,7 +62,7 @@ A support chatbot that leverages local LLMs, vector similarity search, and knowl
 
 ## 🚀 Installation
 
-###  Setup
+### Setup
 
 1. **Clone the repository**
 
@@ -203,48 +203,6 @@ User ──SUBMITS──► Ticket ──HAS_STATUS──► Status
 
 A more detailed architecture diagram can be found in the [docs/1. Analysis/knowledge_graph_architecture_diagram.png](docs/1.%20Analysis/knowledge_graph_architecture_diagram.png) file.
 
-### Sample Data Structure
-
-**Tickets CSV Format:**
-
-```csv
-ticketId,title,description,creationDate,resolvedDate,resolutionSummary,createdByUserId,statusId,priorityId,categoryId
-TICK-001,Login Error,Cannot access dashboard,2024-01-15 10:30:00,2024-01-15 14:20:00,Reset user credentials,USR-001,STA-002,PRI-001,CAT-001
-```
-
-**Comments CSV Format:**
-
-```csv
-commentId,content,creationDate,isSolution,ticketId,authorUserId,articleId
-COM-001,User reported they cannot login,2024-01-15 10:30:00,false,TICK-001,USR-001,
-COM-002,Credentials have been reset,2024-01-15 14:20:00,true,TICK-001,USR-002,DOC-001
-```
-
-### Preparing Ticket Data
-
-1. **Prepare your ticket CSV**
-
-   ```csv
-   ticketId,title,description,status,resolutionSummary
-   TICK-001,Login Error,Cannot access dashboard,CLOSED,Reset user credentials
-   TICK-002,API Timeout,External API calls failing,CLOSED,Increased timeout values
-   ```
-
-2. **Generate embeddings**
-
-   ```bash
-   poetry run python compute_embedding.py
-   ```
-
-3. **Load data into Neo4j**
-   ```python
-   # Create your data loading script based on your CSV structure
-   # Example structure:
-   # (:Ticket)-[:HAS_STATUS]->(:Status)
-   # (:Ticket)-[:CONTAINS]->(:Comment)
-   # (:User)-[:POSTS]->(:Comment)
-   ```
-
 ## 🎯 Usage
 
 ### Running the Application
@@ -263,7 +221,7 @@ poetry run python app.py
 
 ### Using the Chat Interface
 
-1. **Access the application** at `http://localhost:8501`
+1. **Access the application** at [http://localhost:8501](http://localhost:8501)
 2. **Select a model** from the sidebar dropdown
 3. **Configure parameters** (optional):
    - System prompt
@@ -276,7 +234,7 @@ poetry run python app.py
 
 ### Example Interactions
 
-**User**: "I'm getting a 500 error when trying to login to the system"
+**User**: "I get a 500 error when I try to open Aura. What should I do?"
 
 **AI**: _[Searches for similar tickets and finds relevant solutions]_
 "Based on similar tickets, this is typically caused by authentication service issues. Here's how to resolve it:
@@ -357,4 +315,3 @@ This project was built using knowledge and inspiration from:
 - [Ollama Documentation](https://ollama.ai/docs)
 - [LlamaIndex Documentation](https://docs.llamaindex.ai/)
 - [Streamlit Documentation](https://docs.streamlit.io/)
-

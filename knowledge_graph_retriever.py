@@ -20,53 +20,27 @@ config = Config()
 
 class KnowledgeGraphRetriever(BaseRetriever):
     """Knowledge graph retriever for finding similar support ticket solutions using vector similarity.
-    
+
     This retriever searches a Neo4j knowledge graph containing support tickets to find
     solution comments from previously closed tickets that are semantically similar to
     a user's query. It uses vector embeddings of ticket titles and descriptions to
     perform similarity search and retrieves both the solution and relevant context.
-    
+
     The retriever is designed to work with LlamaIndex and can be used standalone
     or integrated into larger RAG (Retrieval-Augmented Generation) pipelines.
-    
-    Architecture:
-        - Neo4j graph database storing tickets, comments, users, and relationships
-        - Vector similarity search using precomputed embeddings
-        - Context-aware retrieval including preceding comments
-        - Integration with LlamaIndex retriever interface
-    
-    Expected Neo4j Schema:
-        - Nodes: Ticket, Comment, User, Status
-        - Relationships: HAS_STATUS, CONTAINS, POSTS
-        - Vector Index: 'ticketsTitleDescription' on Ticket nodes
-        - Properties: ticket.title, ticket.description, comment.content, etc.
-    
+
     Attributes:
         neo4j_driver: Neo4j database driver for graph queries
         top_k: Default number of similar tickets to retrieve
         context_comments: Default number of context comments to include
-        
-    Example:
-        >>> retriever = KnowledgeGraphRetriever(top_k=5, context_comments=3)
-        >>> query_vector = compute_embedding("Cannot login to system")
-        >>> results = retriever.retrieve_solution_comments_by_vector(query_vector)
-        >>> for result in results:
-        ...     print(f"Ticket: {result['title']} (score: {result['similarityScore']:.3f})")
-        ...     print(f"Solution: {result['solutionComment']['content']}")
-        
-    Note:
-        - Requires Neo4j database with vector index configured
-        - Only searches closed tickets with marked solution comments
-        - Results are ordered by similarity score (highest first)
-        - Thread-safe for concurrent usage
     """
 
     def __init__(self, top_k: int = 5, context_comments: int = 3):
         """Initialize the Knowledge Graph Retriever with Neo4j connection and search parameters.
-        
+
         Establishes connection to Neo4j database and configures default retrieval
         parameters. The connection uses credentials from the global config.
-        
+
         Args:
             top_k: Maximum number of similar tickets to retrieve per query.
                 Must be positive integer. Higher values increase recall but may
@@ -74,23 +48,7 @@ class KnowledgeGraphRetriever(BaseRetriever):
             context_comments: Number of comments preceding the solution to include
                 for additional context. Must be non-negative. Provides conversation
                 history to better understand the solution. Recommended range: 0-10.
-                
-        Raises:
-            neo4j.exceptions.ServiceUnavailable: If Neo4j database is unreachable
-            neo4j.exceptions.AuthError: If authentication credentials are invalid
-            Exception: If configuration is missing or malformed
-            
-        Example:
-            >>> # Basic initialization with defaults
-            >>> retriever = KnowledgeGraphRetriever()
-            
-            >>> # Custom configuration for high-recall search
-            >>> retriever = KnowledgeGraphRetriever(top_k=10, context_comments=5)
-            
-        Note:
-            - Connection is established during initialization
-            - Driver supports connection pooling and is thread-safe
-            - Parameters can be overridden per-query if needed
+
         """
         super().__init__()
 
@@ -104,37 +62,23 @@ class KnowledgeGraphRetriever(BaseRetriever):
 
     def _retrieve(self, query_bundle, **kwargs) -> List[NodeWithScore]:
         """Main retrieve method implementing BaseRetriever interface for LlamaIndex integration.
-        
+
         Converts text query to embedding vector and performs similarity search,
         returning results in LlamaIndex NodeWithScore format for pipeline compatibility.
         This method is called automatically by LlamaIndex frameworks.
-        
+
         Args:
             query_bundle: LlamaIndex QueryBundle containing query string and metadata
             **kwargs: Additional parameters passed to retrieve_solution_comments_by_vector
                 - top_k: Override default number of results
                 - context_comments: Override default context comment count
                 - min_similarity_score: Minimum similarity threshold (0.0-1.0)
-                
+
         Returns:
             List[NodeWithScore]: LlamaIndex-compatible results containing:
                 - node: TextNode with formatted ticket/solution content
                 - score: Similarity score (0.0-1.0, higher is more similar)
                 - metadata: Additional information about ticket and comments
-                
-        Example:
-            >>> from llama_index.core.schema import QueryBundle
-            >>> query = QueryBundle(query_str="Login issues with error 500")
-            >>> nodes = retriever._retrieve(query, top_k=3)
-            >>> for node in nodes:
-            ...     print(f"Score: {node.score:.3f}")
-            ...     print(f"Content: {node.node.text[:100]}...")
-            
-        Note:
-            - Automatically converts query text to embedding vector
-            - Results are pre-formatted as text for direct use in RAG
-            - Metadata preserves structured information for post-processing
-            - Empty list returned if no results meet similarity threshold
         """
         # Extract query text and convert to embedding
         query_text = query_bundle.query_str
@@ -173,19 +117,19 @@ class KnowledgeGraphRetriever(BaseRetriever):
         min_similarity_score: float = 0.9,
     ) -> List[Dict[str, Any]]:
         """Find solution comments from closed tickets using vector similarity search.
-        
+
         Performs semantic search against ticket embeddings to find historically
         similar issues and their solutions. Uses Neo4j vector index for efficient
         similarity computation and retrieves comprehensive ticket information
         including solution comments and conversational context.
-        
+
         The search process:
         1. Query vector index for most similar ticket embeddings
         2. Filter to only closed tickets above similarity threshold
         3. Find solution comments marked as solutions
         4. Retrieve preceding context comments for conversation history
         5. Enrich with author information and metadata
-        
+
         Args:
             query_vector: Embedding vector for similarity search. Should be same
                 dimensionality as indexed ticket embeddings (typically 384 or 1536).
@@ -196,10 +140,10 @@ class KnowledgeGraphRetriever(BaseRetriever):
             min_similarity_score: Minimum cosine similarity threshold (0.0-1.0).
                 Higher values return only very similar tickets. Typical values:
                 - 0.95+: Nearly identical issues
-                - 0.85-0.95: Highly similar issues  
+                - 0.85-0.95: Highly similar issues
                 - 0.7-0.85: Moderately similar issues
                 - <0.7: Potentially unrelated issues
-                
+
         Returns:
             List[Dict[str, Any]]: List of ticket results, each containing:
                 - ticketId: Unique ticket identifier
@@ -213,42 +157,6 @@ class KnowledgeGraphRetriever(BaseRetriever):
                     - author: Dict with author information
                 - contextComments: List of preceding comments for context
                 - similarityScore: Cosine similarity score (0.0-1.0)
-                
-        Raises:
-            neo4j.exceptions.CypherSyntaxError: If Cypher query has syntax errors
-            neo4j.exceptions.DatabaseError: If database operation fails
-            Exception: For other database or network errors
-            
-        Example:
-            >>> # Basic similarity search
-            >>> vector = compute_embedding("Cannot access user dashboard")
-            >>> results = retriever.retrieve_solution_comments_by_vector(vector)
-            
-            >>> # High-precision search with context
-            >>> results = retriever.retrieve_solution_comments_by_vector(
-            ...     query_vector=vector,
-            ...     top_k=3,
-            ...     context_comments=5,
-            ...     min_similarity_score=0.95
-            ... )
-            
-            >>> # Process results
-            >>> for result in results:
-            ...     print(f"Found: {result['title']}")
-            ...     print(f"Similarity: {result['similarityScore']:.1%}")
-            ...     solution = result['solutionComment']
-            ...     print(f"Solution by {solution['author']['role']}: {solution['content']}")
-            
-        Performance Notes:
-            - Vector index enables sub-second search on millions of tickets
-            - Query complexity increases with context_comments parameter
-            - Network latency depends on result size and context depth
-            - Consider pagination for very large result sets
-            
-        Database Requirements:
-            - Vector index 'ticketsTitleDescription' must exist on Ticket nodes
-            - Tickets must have title/description embeddings precomputed
-            - Proper relationships between tickets, comments, users, and status
         """
         top_k = top_k or self.top_k
         context_comments = context_comments or self.context_comments
@@ -338,32 +246,17 @@ class KnowledgeGraphRetriever(BaseRetriever):
 
         def _convert_neo4j_datetimes(obj: Any) -> Any:
             """Recursively convert Neo4j DateTime objects to ISO format strings.
-            
+
             Neo4j returns datetime objects in a custom format that needs conversion
             for JSON serialization and consistent handling across the application.
             This function walks through nested data structures and converts any
             Neo4j DateTime instances to ISO 8601 strings.
-            
+
             Args:
                 obj: Object to process, may be dict, list, or scalar value
-                
+
             Returns:
                 Any: Processed object with Neo4j DateTimes converted to ISO strings
-                
-            Example:
-                >>> # Neo4j result with datetime
-                >>> neo4j_result = {
-                ...     "creationDate": neo4j.time.DateTime(2024, 1, 15, 10, 30, 0),
-                ...     "content": "Solution text"
-                ... }
-                >>> cleaned = _convert_neo4j_datetimes(neo4j_result)
-                >>> print(cleaned["creationDate"])  # "2024-01-15T10:30:00"
-                
-            Note:
-                - Handles nested dictionaries and lists recursively
-                - Preserves all other data types unchanged
-                - Uses ISO 8601 format with timezone information
-                - Required for JSON serialization of query results
             """
             # 1) If it's exactly a neo4j.time.DateTime, convert via to_native().isoformat()
             if isinstance(obj, neo4j.time.DateTime):
@@ -380,7 +273,6 @@ class KnowledgeGraphRetriever(BaseRetriever):
 
             # 4) Otherwise, leave as-is (e.g. float, str, int)
             return obj
-
 
         with self.neo4j_driver.session() as session:
             try:
@@ -403,16 +295,11 @@ class KnowledgeGraphRetriever(BaseRetriever):
 
     def _format_result_as_text(self, result: Dict[str, Any]) -> str:
         """Format structured ticket result as readable text for LlamaIndex integration.
-        
-        Converts the structured dictionary result from Neo4j into a human-readable
-        text format suitable for use in RAG pipelines, LLM prompts, and display.
-        The formatting preserves all important information while making it easy
-        to understand the ticket context and solution.
-        
+
         Args:
             result: Structured result dictionary from retrieve_solution_comments_by_vector
                 containing ticket metadata, solution comment, and context comments
-                
+
         Returns:
             str: Formatted text representation containing:
                 - Ticket header with title and ID
@@ -420,41 +307,7 @@ class KnowledgeGraphRetriever(BaseRetriever):
                 - Context comments in chronological order
                 - Solution comment with author attribution
                 - Similarity score for reference
-                
-        Example:
-            >>> result = {
-            ...     "ticketId": "TICK-123",
-            ...     "title": "Login Error 500",
-            ...     "description": "Users getting 500 error on login page",
-            ...     "solutionComment": {
-            ...         "content": "Fixed by restarting auth service",
-            ...         "author": {"role": "Engineer"}
-            ...     },
-            ...     "contextComments": [
-            ...         {"content": "Issue started this morning", "author": {"role": "User"}}
-            ...     ],
-            ...     "similarityScore": 0.92
-            ... }
-            >>> formatted = retriever._format_result_as_text(result)
-            >>> print(formatted)
-            TICKET: Login Error 500
-            Ticket ID: TICK-123
-            Description: Users getting 500 error on login page
-            
-            CONTEXT COMMENTS:
-            - User: Issue started this morning
-            
-            SOLUTION by Engineer:
-            Fixed by restarting auth service
-            
-            Similarity Score: 0.920
-            
-        Note:
-            - Handles missing/null fields gracefully with fallback text
-            - Preserves author role information for credibility assessment
-            - Orders context comments to show conversation flow
-            - Includes similarity score for relevance evaluation
-            - Optimized for readability in LLM prompts
+
         """
         text_parts = []
 

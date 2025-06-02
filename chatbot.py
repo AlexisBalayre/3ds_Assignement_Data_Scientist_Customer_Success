@@ -186,7 +186,7 @@ class Chat:
                 "context_comments": 1,
                 "history_length": 2,
                 "similarity_threshold": 0.80,
-                "max_tokens": 8000,
+                "max_tokens": 2048,
             }
 
             # Load the system prompt from the conversation history
@@ -200,7 +200,7 @@ class Chat:
                         "context_comments": 1,
                         "history_length": 2,
                         "similarity_threshold": 0.80,
-                        "max_tokens": 8000,
+                        "max_tokens": 2048,
                     }
 
     def chat_params(self):
@@ -224,7 +224,7 @@ class Chat:
                 "context_comments": 1,
                 "history_length": 2,
                 "similarity_threshold": 0.80,
-                "max_tokens": 8000,
+                "max_tokens": 2048,
             }
 
         # System prompt

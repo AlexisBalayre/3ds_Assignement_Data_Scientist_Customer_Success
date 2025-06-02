@@ -8,7 +8,7 @@ load_dotenv()
 
 @dataclass
 class Config:
-    """Enhanced configuration for LlamaIndex features"""
+    """Configuration for AuraHelpeskGraph chatbot"""
 
     # Neo4j settings
     neo4j_uri: str = os.getenv("NEO4J_URI", "bolt://localhost:7687")
@@ -22,7 +22,3 @@ class Config:
     ollama_base_url: str = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
     ollama_temperature: float = float(os.getenv("OLLAMA_TEMPERATURE", "0"))
     ollama_max_tokens: int = int(os.getenv("OLLAMA_MAX_TOKENS", "2048"))
-
-
-    
-    

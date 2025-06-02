@@ -82,9 +82,6 @@ class UserQuestionAnalysis(BaseModel):
 
         Returns:
             str: The validated and stripped title
-
-        Raises:
-            ValueError: If title exceeds 10 words
         """
         word_count = len(v.split())
         if word_count > 10:
@@ -100,9 +97,6 @@ class UserQuestionAnalysis(BaseModel):
 
         Returns:
             str: The validated and stripped description
-
-        Raises:
-            ValueError: If description is empty or only whitespace
         """
         if not v or not v.strip():
             raise ValueError("Description cannot be empty")
@@ -115,13 +109,6 @@ class LLMHandler:
     This class manages LLM interactions, question analysis, knowledge base retrieval,
     and streaming responses for the Aura chatbot support system. It integrates with
     Ollama for local LLM inference and provides tools for finding similar support tickets.
-
-    The handler supports:
-    - Question analysis and categorization
-    - Vector-based similarity search for past tickets
-    - Streaming responses with tool usage
-    - Configurable model parameters
-    - Integration with knowledge graph retrieval
 
     Attributes:
         config: Configuration instance with API settings
@@ -136,16 +123,6 @@ class LLMHandler:
         max_tokens: Maximum tokens for LLM responses
         llm_client: OpenAI client configured for Ollama
         results: Last retrieved similar tickets
-
-    Example:
-        >>> handler = LLMHandler(streamlit_interface)
-        >>> for token in handler.llm_stream(
-        ...     model_name="llama2",
-        ...     messages_history=[],
-        ...     user_prompt="How do I reset my Aura password?",
-        ...     system_prompt="You are a helpful support agent."
-        ... ):
-        ...     print(token, end="")
     """
 
     def __init__(self, st):
@@ -195,19 +172,6 @@ class LLMHandler:
                 - category: Support category enum value
                 - title: Concise question summary (≤10 words)
                 - description: Detailed issue explanation
-
-        Raises:
-            Exception: If LLM analysis fails, returns error analysis object
-
-        Example:
-            >>> analysis = handler._analyze_question("I can't log into Aura")
-            >>> print(analysis.category)  # AuraCategoryEnum.ACCESS
-            >>> print(analysis.title)     # "Cannot login to Aura account"
-
-        Note:
-            - Uses structured output parsing with Pydantic models
-            - Fallback error handling returns safe default values
-            - Analysis results are logged for debugging
         """
 
         prompt_system = """# Identity
@@ -276,9 +240,6 @@ class LLMHandler:
         by analyzing the question, computing embeddings, and retrieving matching
         tickets with their solution comments and context.
 
-        This method should be used when users have specific technical issues,
-        problems, or questions that might have been solved in past tickets.
-
         Args:
             question: The exact user question as asked to the LLM
 
@@ -291,33 +252,6 @@ class LLMHandler:
                 - resolutionSummary: Summary of resolution
                 - solutionComment: Primary solution comment with metadata
                 - contextComments: List of related comments for context
-
-        Raises:
-            Exception: Returns list with error dict if search fails
-
-        Example:
-            >>> tickets = handler._find_similar_tickets("Aura login error")
-            >>> for ticket in tickets:
-            ...     print(f"Found: {ticket['title']} (score: {ticket['similarityScore']})")
-
-        Note:
-            - Questions unrelated to Aura return empty list
-            - Uses configurable similarity threshold and result count
-            - Combines question title and description for better matching
-            - Results are stored in self.results for UI display
-
-        Tool Usage Guidelines:
-            USE for:
-            - Technical problems or errors
-            - How-to questions about Aura features
-            - Access issues
-            - Bug reports
-            - Performance problems
-
-            DO NOT USE for:
-            - Simple greetings
-            - General information requests
-            - Questions answerable with general knowledge
         """
         try:
             logger.info(f"Analyzing question to verify relevance: {question}")
@@ -372,15 +306,6 @@ class LLMHandler:
                 - type: "function"
                 - name: Tool function name
                 - description: When and how to use the tool
-
-        Example:
-            >>> tools = handler._setup_tools()
-            >>> print(tools[0]['name'])  # "find_similar_tickets"
-
-        Note:
-            - Tools follow OpenAI function calling specification
-            - Descriptions guide LLM on appropriate usage
-            - Can be extended with additional tools as needed
         """
         tools = []
         tools.append(
@@ -403,17 +328,6 @@ class LLMHandler:
 
         Returns:
             str: Enhanced prompt with tool usage guidelines appended
-
-        Example:
-            >>> enhanced = handler._get_system_prompt_with_tool_guidance(
-            ...     "You are a helpful assistant."
-            ... )
-            >>> assert "TOOL USAGE GUIDELINES" in enhanced
-
-        Note:
-            - Provides clear DO/DON'T examples for tool usage
-            - Helps prevent unnecessary tool calls for simple queries
-            - Guides natural integration of tool results into responses
         """
         tool_guidance = """
 
@@ -466,19 +380,6 @@ class LLMHandler:
             min_similarity_score: Minimum similarity threshold (0.0-1.0)
                 - Higher values: More precise but fewer results
                 - Lower values: More results but potentially less relevant
-
-        Example:
-            >>> handler.update_settings(
-            ...     model_name="llama2:13b",
-            ...     temperature=0.3,
-            ...     top_k=10,
-            ...     min_similarity_score=0.8
-            ... )
-
-        Note:
-            - Only provided parameters are updated
-            - Changes affect subsequent LLM calls immediately
-            - Invalid values may cause errors in subsequent operations
         """
         if model_name:
             self.model_name = model_name
@@ -523,38 +424,6 @@ class LLMHandler:
 
         Yields:
             str: Individual response tokens as they are generated
-
-        Raises:
-            Exception: If LLM API call fails, yields error message
-
-        Example:
-            >>> response = ""
-            >>> for token in handler.llm_stream(
-            ...     model_name="llama2",
-            ...     messages_history=[
-            ...         {"role": "user", "content": "Hello"},
-            ...         {"role": "assistant", "content": "Hi there!"}
-            ...     ],
-            ...     user_prompt="How do I reset my password?",
-            ...     system_prompt="You are a helpful support agent.",
-            ...     temperature=0.3,
-            ...     use_tools=True
-            ... ):
-            ...     response += token
-            ...     print(token, end="")
-
-        Behavior:
-            - When use_tools=True: LLM decides whether to call tools
-            - Tool calls trigger UI updates showing progress
-            - Similar tickets found are displayed in sources section
-            - Falls back to direct LLM if tool usage fails
-            - Maintains conversation context within history_length
-
-        Note:
-            - Streaming allows real-time response display
-            - Tool usage is automatic based on LLM decisions
-            - UI interactions require compatible st interface
-            - Error handling ensures graceful degradation
         """
         try:
             # Build chat history from recent messages
@@ -629,6 +498,13 @@ class LLMHandler:
                                 tool_response = self._find_similar_tickets(
                                     question=user_prompt
                                 )
+
+                                if isinstance(tool_response, list) and len(tool_response) == 0:
+                                    r = [
+                                        {
+                                            "error": "No similar tickets found for the provided question."
+                                        }
+                                    ]
 
                                 if tool_response:
                                     msg_placeholder.markdown(
@@ -747,19 +623,6 @@ class LLMHandler:
                     )
                     logger.error(f"Agent error: {str(e)}")
 
-            # Fallback: direct LLM without tools
-            stream = self.llm_client.chat.completions.create(
-                model=model_name,
-                messages=messages,
-                temperature=temperature,
-                max_tokens=max_tokens,
-                stream=True,
-            )
-            for chunk in stream:
-                content = chunk.choices[0].delta.content
-                if content:
-                    yield content
-
         except Exception as e:
             error_msg = f"Error in LLM streaming: {str(e)}"
             logger.error(error_msg)
@@ -779,25 +642,6 @@ class LLMHandler:
                 - modified_at: Last modification timestamp
                 - digest: Model hash/digest
                 Empty list if API call fails or no models available
-
-        Raises:
-            Logs warnings but doesn't raise exceptions, returns empty list on failure
-
-        Example:
-            >>> models = handler.get_available_models()
-            >>> for model in models:
-            ...     print(f"Available: {model['name']} ({model['size']} bytes)")
-            >>> # Available: llama2:latest (4235234567 bytes)
-            >>> # Available: mistral:7b (3645234234 bytes)
-
-        Note:
-            - Requires Ollama server running on localhost:11434
-            - 5 second timeout prevents hanging on unresponsive server
-            - Graceful error handling with user-friendly warnings
-            - Models must be pulled/installed in Ollama before appearing
-
-        API Endpoint:
-            GET http://localhost:11434/api/tags
         """
         try:
             response = requests.get("http://localhost:11434/api/tags", timeout=5)
@@ -824,17 +668,6 @@ class LLMHandler:
                 - Keys: Tool function names (e.g., "find_similar_tickets")
                 - Values: Human-readable descriptions of tool functionality
                 Empty dict if no tools configured or names missing
-
-        Example:
-            >>> tools = handler.get_available_tools()
-            >>> for name, desc in tools.items():
-            ...     print(f"{name}: {desc}")
-            >>> # find_similar_tickets: Search for similar support tickets...
-
-        Note:
-            - Tools without names are skipped with warning
-            - Descriptions come from tool configuration
-            - Used for validation and user interface display
         """
         tool_descriptions: Dict[str, str] = {}
         for tool in self.tools:
