@@ -250,7 +250,7 @@ _[Shows source tickets with similarity scores]_
 
 ```
 3ds_Assignement_Data_Scientist_Customer_Success/
-├── main.py                     # Application entry point
+├── app.py                     # Application entry point
 ├── chatbot.py                  # Streamlit chat interface
 ├── llm_handler.py             # LLM operations and tool integration
 ├── knowledge_graph_retriever.py # Neo4j similarity search
