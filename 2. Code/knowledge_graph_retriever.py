@@ -1,9 +1,11 @@
+import datetime
 import logging
 from typing import List, Dict, Any, Optional
 
 from llama_index.core.retrievers import BaseRetriever
 from llama_index.core.schema import NodeWithScore, TextNode
 from neo4j import GraphDatabase
+import neo4j
 
 from config import Config
 from compute_embedding import compute_embedding
@@ -180,6 +182,28 @@ class KnowledgeGraphRetriever(BaseRetriever):
         ORDER BY result.similarityScore DESC;
         """
 
+        def _convert_neo4j_datetimes(obj: Any) -> Any:
+            """
+            Recursively walk through obj (which may be a dict, list, or scalar).
+            Whenever we see a neo4j.time.DateTime, convert it to an ISO string.
+            """
+            # 1) If it’s exactly a neo4j.time.DateTime, convert via to_native().isoformat()
+            if isinstance(obj, neo4j.time.DateTime):
+                # to_native() returns a built-in datetime.datetime with tzinfo
+                return obj.to_native().isoformat()
+
+            # 2) If it’s a dict, recurse on all values
+            if isinstance(obj, dict):
+                return {key: _convert_neo4j_datetimes(val) for key, val in obj.items()}
+
+            # 3) If it’s a list (or tuple), recurse on each element
+            if isinstance(obj, list):
+                return [_convert_neo4j_datetimes(elem) for elem in obj]
+
+            # 4) Otherwise, leave as-is (e.g. float, str, int)
+            return obj
+
+
         with self.neo4j_driver.session() as session:
             try:
                 records = session.run(
@@ -189,7 +213,12 @@ class KnowledgeGraphRetriever(BaseRetriever):
                     context_comments=context_comments,
                     min_similarity_score=min_similarity_score,
                 )
-                return [record["result"] for record in records]
+                raw_results = [record["result"] for record in records]
+
+                # Post‐process each result to turn datetime objects into strings:
+                cleaned_results = [_convert_neo4j_datetimes(r) for r in raw_results]
+                return cleaned_results
+
             except Exception as e:
                 logger.error(f"Error executing Cypher query: {e}")
                 return []

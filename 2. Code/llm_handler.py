@@ -1,10 +1,9 @@
 import json
 import logging
 from enum import Enum
-from typing import Any, List, Optional, Dict
-from datetime import date, datetime
+from typing import List, Optional, Dict
+import time
 
-import pandas as pd
 import requests
 from pydantic import BaseModel, Field, field_validator
 from openai import OpenAI
@@ -239,16 +238,6 @@ class LLMHandler:
                 "type": "function",
                 "name": "find_similar_tickets",
                 "description": "Search for similar support tickets in the knowledge base when users have technical issues, problems, or specific questions about Aura that might have been solved before. Use this to find relevant past solutions and help resolve user issues more effectively.",
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "question": {
-                            "type": "string",
-                            "description": "The exact user question as asked to the LLM.",
-                        },
-                    },
-                    "required": ["question"],
-                },
             }
         )
         return tools
@@ -385,6 +374,15 @@ class LLMHandler:
             # Use agent with tools if enabled
             if use_tools and self.tools:
                 try:
+
+                    # 1) Create a placeholder
+                    msg_placeholder = self.st.empty()
+                    msg_placeholder.markdown(
+                        "### 🤖 Agent with Tools\n"
+                        "The agent will analyze your question and decide if it needs to use tools to find relevant past tickets."
+                    )
+                    time.sleep(1)  # Give time for the placeholder to render
+
                     # Ask the model to decide if it needs to use tools
                     tool_assessment_response = self.llm_client.chat.completions.create(
                         model=model_name,
@@ -397,18 +395,14 @@ class LLMHandler:
 
                     # Check if the model made a tool call
                     if response_message.tool_calls:
-                        # Append the assistant's message with tool calls
-                        messages.append(
-                            {
-                                "role": "assistant",
-                                "content": response_message.content,
-                                "tool_calls": response_message.tool_calls,
-                            }
-                        )
+                        messages.append(response_message)
 
-                        # Process each tool call
                         for tool_call in response_message.tool_calls:
                             if tool_call.function.name == "find_similar_tickets":
+                                msg_placeholder.markdown(
+                                    "### 🔍 Finding Similar Tickets\n"
+                                    "The agent has decided to use the tool to find similar past tickets."
+                                )
 
                                 logger.info(
                                     f"Tool call detected: {tool_call.function.name}"
@@ -417,13 +411,24 @@ class LLMHandler:
                                     question=user_prompt
                                 )
 
-                                # Append tool response with correct format
-                                tool_message = {
-                                    "role": "function_call_output",
-                                    "tool_call_id": tool_call.id,
-                                    "content": str(tool_response),
-                                }
-                                messages.append(tool_message)
+                                if tool_response:
+                                    msg_placeholder.markdown(
+                                        "### 📄 Similar Tickets Found\n"
+                                        f"The agent found {len(tool_response)} similar tickets."
+                                    )
+                                    time.sleep(
+                                        2
+                                    )  # Give time for the placeholder to render
+
+                                messages.append(
+                                    {
+                                        "role": "tool",
+                                        "tool_call_id": tool_call.id,
+                                        "content": json.dumps(tool_response, indent=2),
+                                    }
+                                )
+
+                        msg_placeholder.empty()  # Clear the placeholder after tool call
 
                         # Continue the conversation with the tool response
                         stream = self.llm_client.chat.completions.create(
@@ -432,6 +437,7 @@ class LLMHandler:
                             temperature=temperature,
                             max_tokens=max_tokens,
                             stream=True,
+                            tools=self.tools,
                         )
                         for chunk in stream:
                             content = chunk.choices[0].delta.content
@@ -506,6 +512,12 @@ class LLMHandler:
                                 self.st.markdown("")  # Extra line break for spacing
 
                     else:
+                        messages.append(
+                            {
+                                "role": "assistant",
+                                "content": response_message.content,
+                            }
+                        )
                         # No tool calls were made, just return the response
                         if response_message.content:
                             yield response_message.content

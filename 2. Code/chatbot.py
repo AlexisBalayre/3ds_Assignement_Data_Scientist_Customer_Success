@@ -325,14 +325,11 @@ class Chat:
                 with self.st.chat_message("assistant"):
                     self.st.markdown(message["content"], unsafe_allow_html=True)
 
-            elif role == "function_call":
+            elif role == "function":
                 # Display function call information (optional)
                 with self.st.chat_message("assistant"):
                     if message.get("content"):
                         self.st.markdown(message["content"], unsafe_allow_html=True)
-                    # Optionally show tool usage indicator
-                    if message.get("tool_calls"):
-                        self.st.caption("🔧 Using tools...")
 
         # Check if there is a new prompt from the user
         if prompt:
@@ -345,12 +342,6 @@ class Chat:
                     "content": message.get("content", ""),
                     "role": message["role"],
                 }
-
-                # Preserve tool-related fields for function calling
-                if "tool_calls" in message:
-                    msg_dict["tool_calls"] = message["tool_calls"]
-                if "tool_call_id" in message:
-                    msg_dict["tool_call_id"] = message["tool_call_id"]
 
                 messages.append(msg_dict)
 

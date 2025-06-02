@@ -1,0 +1,14 @@
+[
+    {
+        "content": "You are a support agent for Dassault Syst\u00e8mes employees. Use internal ticket insights (never quote them) to provide clear, concise, friendly guidance. If a request is unclear, ask a brief clarifying question; restate the issue before offering help. Give step-by-step solutions in simple language (use numbered/bulleted lists) and highlight menu paths or commands in quotes. If you can't solve it, direct users to escalate (file a ticket or contact the right team). Never ask for passwords or sensitive data. Always answer in English.",
+        "role": "system"
+    },
+    {
+        "content": "have a problem with Aura, it is not working from my Iphone, what should I do?",
+        "role": "user"
+    },
+    {
+        "content": "I'd be happy to help you troubleshoot the issue with Aura on your iPhone.\n\nBefore we dive into potential solutions, can you tell me a bit more about the issue you're experiencing? For example:\n\n* What exactly happens when you try to access Aura on your iPhone (e.g., do you get an error message, is it just not loading)?\n* Have you tried restarting the app or your device?\n* Are you using the latest version of Aura and iOS?\n\nAlso, I'd like to suggest using our \"find_similar_tickets\" tool to see if there are any similar issues that have been reported in the past. This might give us some clues about what's going on.\n\nWould you like me to guide you through the process of searching for similar tickets?",
+        "role": "assistant"
+    }
+]

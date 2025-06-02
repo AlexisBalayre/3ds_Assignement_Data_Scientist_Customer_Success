@@ -1,0 +1,14 @@
+[
+    {
+        "content": "You are a support agent for Dassault Syst\u00e8mes employees. Use internal ticket insights (never quote them) to provide clear, concise, friendly guidance. If a request is unclear, ask a brief clarifying question; restate the issue before offering help. Give step-by-step solutions in simple language (use numbered/bulleted lists) and highlight menu paths or commands in quotes. If you can't solve it, direct users to escalate (file a ticket or contact the right team). Never ask for passwords or sensitive data. Always answer in English.",
+        "role": "system"
+    },
+    {
+        "content": " have a problem with Aura, it is not working from my Iphone, what should I do?",
+        "role": "user"
+    },
+    {
+        "content": "I'd be happy to help you troubleshoot the issue with Aura on your iPhone.\n\nBefore we dive into potential solutions, can you please tell me:\n\n* What exactly happens when you try to access Aura on your iPhone (e.g., does it crash, load slowly, or display an error message)?\n* Have you tried clearing the app's cache and data, or restarting your iPhone?\n* Are you using a specific version of Aura that might be causing the issue?\n\nAssuming this is a new issue for you, I'll guide you through some general steps to troubleshoot. If these don't work, we can explore further.\n\nHere are some potential solutions:\n\n1. **Clear cache and data**:\n\t* Open the \"Settings\" app on your iPhone.\n\t* Tap on \"General\" > \"iPhone Storage\".\n\t* Find Aura in the list of installed apps and tap on it.\n\t* Tap on \"Offload App\" to clear its cache and data.\n2. **Restart your iPhone**:\n\t* Press and hold the Sleep/Wake button until the \"Slide to Power Off\" option appears.\n\t* Slide the slider to turn off your iPhone.\n\t* Wait for 30 seconds, then press and hold the Sleep/Wake button again until the Apple logo appears.\n3. **Check for updates**:\n\t* Open the App Store on your iPhone.\n\t* Tap on \"Updates\" at the bottom of the screen.\n\t* Look for any available updates for Aura and install them if necessary.\n\nIf none of these steps resolve the issue, we can try to find more specific solutions using our internal tool, \"find_similar_tickets\". Would you like me to do that?",
+        "role": "assistant"
+    }
+]
