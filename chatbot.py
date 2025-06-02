@@ -18,7 +18,7 @@ class Chat:
     and managing input/output of chat messages.
     """
 
-    def __init__(self, output_dir="llm_history", health_check_enabled=False):
+    def __init__(self, output_dir="llm_history"):
         """
         Initializes the Chat class, setting up model connections and configuring the chat interface.
 

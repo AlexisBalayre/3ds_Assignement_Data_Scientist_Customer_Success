@@ -18,7 +18,23 @@ config = Config()
 
 
 class AuraCategoryEnum(str, Enum):
-    """Enumeration for Aura support categories."""
+    """Enumeration for Aura support ticket categories.
+
+    This enum defines the standardized categories used to classify
+    user questions and support tickets in the Aura chatbot system.
+    Each category has a specific code for database storage and tracking.
+
+    Attributes:
+        ACCESS: Login, permissions, and account access issues (cat_001)
+        RESPONSES: Response quality, accuracy, and relevance problems (cat_002)
+        FEATURES: Functionality requests or feature availability questions (cat_003)
+        INTEGRATION: External system, API, and tool connections (cat_004)
+        TRAINING: Usage guidance, best practices, and learning resources (cat_005)
+        PERFORMANCE: Speed, reliability, and system performance issues (cat_006)
+        BUG_REPORT: Technical bugs, errors, and unexpected behavior (cat_007)
+        ACCOUNT_MANAGEMENT: User profiles, settings, preferences, billing (cat_008)
+        DOCUMENTATION: Missing, unclear, or inadequate documentation (cat_009)
+    """
 
     ACCESS = "cat_001"
     RESPONSES = "cat_002"
@@ -32,7 +48,17 @@ class AuraCategoryEnum(str, Enum):
 
 
 class UserQuestionAnalysis(BaseModel):
-    """Pydantic model for user question analysis."""
+    """Pydantic model for structured analysis of user questions about Aura chatbot.
+
+    This model provides a standardized way to analyze and categorize user questions,
+    enabling better routing, response generation, and ticket management.
+
+    Attributes:
+        is_related_to_aura: Whether the question pertains to Aura chatbot functionality
+        category: The most appropriate support category for the question
+        title: A concise summary of the question (max 10 words)
+        description: Detailed explanation capturing the key issue or request
+    """
 
     is_related_to_aura: bool = Field(
         default=True, description="Indicates if the question is related to Aura chatbot"
@@ -49,7 +75,17 @@ class UserQuestionAnalysis(BaseModel):
 
     @field_validator("title")
     def validate_title_length(cls, v):
-        """Ensure title is concise."""
+        """Validate that title is concise and within word limit.
+
+        Args:
+            v: The title string to validate
+
+        Returns:
+            str: The validated and stripped title
+
+        Raises:
+            ValueError: If title exceeds 10 words
+        """
         word_count = len(v.split())
         if word_count > 10:
             raise ValueError("Title should not exceed 10 words")
@@ -57,14 +93,71 @@ class UserQuestionAnalysis(BaseModel):
 
     @field_validator("description")
     def validate_description(cls, v):
-        """Ensure description is not empty."""
+        """Validate that description is not empty.
+
+        Args:
+            v: The description string to validate
+
+        Returns:
+            str: The validated and stripped description
+
+        Raises:
+            ValueError: If description is empty or only whitespace
+        """
         if not v or not v.strip():
             raise ValueError("Description cannot be empty")
         return v.strip()
 
 
 class LLMHandler:
+    """Handler for Large Language Model operations with tool integration for Aura chatbot support.
+
+    This class manages LLM interactions, question analysis, knowledge base retrieval,
+    and streaming responses for the Aura chatbot support system. It integrates with
+    Ollama for local LLM inference and provides tools for finding similar support tickets.
+
+    The handler supports:
+    - Question analysis and categorization
+    - Vector-based similarity search for past tickets
+    - Streaming responses with tool usage
+    - Configurable model parameters
+    - Integration with knowledge graph retrieval
+
+    Attributes:
+        config: Configuration instance with API settings
+        st: Streamlit-like interface for UI interactions
+        kg_retriever: Knowledge graph retriever for ticket search
+        tools: List of available tools for LLM function calling
+        top_k: Number of similar tickets to retrieve (default: 5)
+        context_comments: Number of context comments to include (default: 3)
+        min_similarity_score: Minimum similarity threshold (default: 0.85)
+        model_name: Name of the LLM model to use
+        temperature: Temperature for response generation
+        max_tokens: Maximum tokens for LLM responses
+        llm_client: OpenAI client configured for Ollama
+        results: Last retrieved similar tickets
+
+    Example:
+        >>> handler = LLMHandler(streamlit_interface)
+        >>> for token in handler.llm_stream(
+        ...     model_name="llama2",
+        ...     messages_history=[],
+        ...     user_prompt="How do I reset my Aura password?",
+        ...     system_prompt="You are a helpful support agent."
+        ... ):
+        ...     print(token, end="")
+    """
+
     def __init__(self, st):
+        """Initialize the LLM Handler with configuration and dependencies.
+
+        Args:
+            st: Streamlit-like interface object for UI interactions and logging.
+                Must have methods: error(), warning(), markdown(), empty()
+
+        Raises:
+            Exception: If configuration loading or client initialization fails
+        """
         self.config = Config()
         self.st = st
 
@@ -87,15 +180,34 @@ class LLMHandler:
         )
 
     def _analyze_question(self, question: str) -> UserQuestionAnalysis:
-        """
-        Analyze a user question about the Aura chatbot and categorize it.
+        """Analyze and categorize a user question about the Aura chatbot.
+
+        Uses an LLM to perform structured analysis of user questions, determining
+        relevance to Aura, appropriate category, and generating a concise title
+        and detailed description for better support routing.
 
         Args:
-            question (str): The user question to analyze.
+            question: The raw user question to analyze
 
         Returns:
-            UserQuestionAnalysis: Structured analysis including whether it's related
-                                  to Aura, its category, a short title, and a detailed description.
+            UserQuestionAnalysis: Structured analysis containing:
+                - is_related_to_aura: Boolean relevance flag
+                - category: Support category enum value
+                - title: Concise question summary (≤10 words)
+                - description: Detailed issue explanation
+
+        Raises:
+            Exception: If LLM analysis fails, returns error analysis object
+
+        Example:
+            >>> analysis = handler._analyze_question("I can't log into Aura")
+            >>> print(analysis.category)  # AuraCategoryEnum.ACCESS
+            >>> print(analysis.title)     # "Cannot login to Aura account"
+
+        Note:
+            - Uses structured output parsing with Pydantic models
+            - Fallback error handling returns safe default values
+            - Analysis results are logged for debugging
         """
 
         prompt_system = """# Identity
@@ -157,32 +269,55 @@ class LLMHandler:
                 description=str(e),
             )
 
-    def _find_similar_tickets(
-        self,
-        question: str,
-    ) -> List[Dict]:
-        """
-        Find similar tickets based on the raw user question.
+    def _find_similar_tickets(self, question: str) -> List[Dict]:
+        """Find similar support tickets using vector similarity search.
 
-        Use this tool when the user has a specific technical issue, problem, or question
-        that might have been solved before in past support tickets. This is especially
-        useful for:
-        - Technical problems or errors
-        - How-to questions about Aura features
-        - Access issues
-        - Bug reports
-        - Performance problems
+        Searches the knowledge base for tickets similar to the user's question
+        by analyzing the question, computing embeddings, and retrieving matching
+        tickets with their solution comments and context.
 
-        Do NOT use this tool for:
-        - Simple greetings
-        - General information requests
-        - Questions that can be answered with general knowledge
+        This method should be used when users have specific technical issues,
+        problems, or questions that might have been solved in past tickets.
 
         Args:
-            question (str): The exact user question as asked to the LLM.
+            question: The exact user question as asked to the LLM
 
         Returns:
-            List[Dict]: List of similar tickets with their details and solutions.
+            List[Dict]: List of similar tickets, each containing:
+                - title: Ticket title
+                - ticketId: Unique ticket identifier
+                - similarityScore: Similarity score (0.0-1.0)
+                - description: Ticket description
+                - resolutionSummary: Summary of resolution
+                - solutionComment: Primary solution comment with metadata
+                - contextComments: List of related comments for context
+
+        Raises:
+            Exception: Returns list with error dict if search fails
+
+        Example:
+            >>> tickets = handler._find_similar_tickets("Aura login error")
+            >>> for ticket in tickets:
+            ...     print(f"Found: {ticket['title']} (score: {ticket['similarityScore']})")
+
+        Note:
+            - Questions unrelated to Aura return empty list
+            - Uses configurable similarity threshold and result count
+            - Combines question title and description for better matching
+            - Results are stored in self.results for UI display
+
+        Tool Usage Guidelines:
+            USE for:
+            - Technical problems or errors
+            - How-to questions about Aura features
+            - Access issues
+            - Bug reports
+            - Performance problems
+
+            DO NOT USE for:
+            - Simple greetings
+            - General information requests
+            - Questions answerable with general knowledge
         """
         try:
             logger.info(f"Analyzing question to verify relevance: {question}")
@@ -226,11 +361,26 @@ class LLMHandler:
             return [{"error": f"Error finding similar content: {str(e)}"}]
 
     def _setup_tools(self):
-        """
-        Setup available tools for the LLM to use.
+        """Setup and configure available tools for LLM function calling.
+
+        Initializes the function calling tools that the LLM can use to enhance
+        its responses. Currently includes the ticket similarity search tool.
 
         Returns:
-            list: List of tools available for the LLM to use, including their names and descriptions.
+            List[Dict]: List of tool definitions with OpenAI function calling format.
+                Each tool dict contains:
+                - type: "function"
+                - name: Tool function name
+                - description: When and how to use the tool
+
+        Example:
+            >>> tools = handler._setup_tools()
+            >>> print(tools[0]['name'])  # "find_similar_tickets"
+
+        Note:
+            - Tools follow OpenAI function calling specification
+            - Descriptions guide LLM on appropriate usage
+            - Can be extended with additional tools as needed
         """
         tools = []
         tools.append(
@@ -243,14 +393,27 @@ class LLMHandler:
         return tools
 
     def _get_system_prompt_with_tool_guidance(self, base_system_prompt: str) -> str:
-        """
-        Enhance the system prompt with guidance on when to use tools.
+        """Enhance system prompt with comprehensive tool usage guidelines.
+
+        Adds detailed instructions to the system prompt about when and how to use
+        available tools, helping the LLM make better decisions about tool usage.
 
         Args:
-            base_system_prompt (str): The base system prompt
+            base_system_prompt: The original system prompt text
 
         Returns:
-            str: Enhanced system prompt with tool usage guidance
+            str: Enhanced prompt with tool usage guidelines appended
+
+        Example:
+            >>> enhanced = handler._get_system_prompt_with_tool_guidance(
+            ...     "You are a helpful assistant."
+            ... )
+            >>> assert "TOOL USAGE GUIDELINES" in enhanced
+
+        Note:
+            - Provides clear DO/DON'T examples for tool usage
+            - Helps prevent unnecessary tool calls for simple queries
+            - Guides natural integration of tool results into responses
         """
         tool_guidance = """
 
@@ -286,16 +449,36 @@ class LLMHandler:
         context_comments: int = None,
         min_similarity_score: float = None,
     ):
-        """
-        Update the settings for the LLM handler.
+        """Update configuration settings for the LLM handler.
+
+        Allows runtime modification of various parameters that control
+        LLM behavior and knowledge retrieval without reinitializing the handler.
 
         Args:
-            model_name (str): The name of the model to use.
-            temperature (float): The temperature for response generation.
-            max_tokens (int): The maximum number of tokens for the response.
-            top_k (int): Number of similar tickets to retrieve.
-            context_comments (int): Number of context comments to include.
-            min_similarity_score (float): Minimum similarity score for results.
+            model_name: Name of the LLM model to use (e.g., "llama2", "mistral")
+            temperature: Controls randomness in responses (0.0-2.0)
+                - 0.0: Deterministic, focused responses
+                - 1.0: Balanced creativity and consistency
+                - 2.0: Very creative, potentially inconsistent
+            max_tokens: Maximum tokens in LLM response (positive integer)
+            top_k: Number of similar tickets to retrieve (1-20 recommended)
+            context_comments: Number of context comments per ticket (1-10 recommended)
+            min_similarity_score: Minimum similarity threshold (0.0-1.0)
+                - Higher values: More precise but fewer results
+                - Lower values: More results but potentially less relevant
+
+        Example:
+            >>> handler.update_settings(
+            ...     model_name="llama2:13b",
+            ...     temperature=0.3,
+            ...     top_k=10,
+            ...     min_similarity_score=0.8
+            ... )
+
+        Note:
+            - Only provided parameters are updated
+            - Changes affect subsequent LLM calls immediately
+            - Invalid values may cause errors in subsequent operations
         """
         if model_name:
             self.model_name = model_name
@@ -321,21 +504,57 @@ class LLMHandler:
         max_tokens: int = 1024,
         use_tools: bool = True,
     ):
-        """
-        Synchronous streaming LLM response.
+        """Generate streaming LLM responses with optional tool usage.
+
+        Processes user input through an LLM with support for function calling,
+        conversation history, and streaming output. Integrates tool usage
+        for enhanced responses when appropriate.
 
         Args:
-            model_name (str): The name or identifier of the model to use.
-            messages_history (list): A list of message dicts representing the conversation history.
-            user_prompt (str): The user's input prompt.
-            system_prompt (str): The system's input prompt.
-            temperature (float): Controls randomness (default: 0.0).
-            history_length (int): Number of messages to keep in history (default: 10).
-            max_tokens (int): Maximum tokens for the response (default: 1024).
-            use_tools (bool): Whether to enable tool usage (default: True).
+            model_name: Name/identifier of the LLM model to use
+            messages_history: List of previous conversation messages
+                Each message should have 'role' and 'content' keys
+            user_prompt: Current user input to process
+            system_prompt: System instructions for the LLM
+            temperature: Response randomness control (0.0-2.0)
+            history_length: Number of previous messages to include (1-50)
+            max_tokens: Maximum tokens in response (1-4096)
+            use_tools: Whether to enable function calling tools
 
         Yields:
-            str: A response token generated by the language model.
+            str: Individual response tokens as they are generated
+
+        Raises:
+            Exception: If LLM API call fails, yields error message
+
+        Example:
+            >>> response = ""
+            >>> for token in handler.llm_stream(
+            ...     model_name="llama2",
+            ...     messages_history=[
+            ...         {"role": "user", "content": "Hello"},
+            ...         {"role": "assistant", "content": "Hi there!"}
+            ...     ],
+            ...     user_prompt="How do I reset my password?",
+            ...     system_prompt="You are a helpful support agent.",
+            ...     temperature=0.3,
+            ...     use_tools=True
+            ... ):
+            ...     response += token
+            ...     print(token, end="")
+
+        Behavior:
+            - When use_tools=True: LLM decides whether to call tools
+            - Tool calls trigger UI updates showing progress
+            - Similar tickets found are displayed in sources section
+            - Falls back to direct LLM if tool usage fails
+            - Maintains conversation context within history_length
+
+        Note:
+            - Streaming allows real-time response display
+            - Tool usage is automatic based on LLM decisions
+            - UI interactions require compatible st interface
+            - Error handling ensures graceful degradation
         """
         try:
             # Build chat history from recent messages
@@ -547,11 +766,38 @@ class LLMHandler:
             yield error_msg
 
     def get_available_models(self) -> List[dict]:
-        """
-        Get list of available Ollama models by calling the local Ollama API.
+        """Retrieve list of available Ollama models from local API.
+
+        Queries the local Ollama API to get currently installed and available
+        models for use with the LLM handler. Useful for dynamic model selection
+        and validation.
 
         Returns:
-            list: List of available models, each represented as a dictionary.
+            List[Dict]: List of available models with metadata. Each model dict contains:
+                - name: Model name/identifier
+                - size: Model file size
+                - modified_at: Last modification timestamp
+                - digest: Model hash/digest
+                Empty list if API call fails or no models available
+
+        Raises:
+            Logs warnings but doesn't raise exceptions, returns empty list on failure
+
+        Example:
+            >>> models = handler.get_available_models()
+            >>> for model in models:
+            ...     print(f"Available: {model['name']} ({model['size']} bytes)")
+            >>> # Available: llama2:latest (4235234567 bytes)
+            >>> # Available: mistral:7b (3645234234 bytes)
+
+        Note:
+            - Requires Ollama server running on localhost:11434
+            - 5 second timeout prevents hanging on unresponsive server
+            - Graceful error handling with user-friendly warnings
+            - Models must be pulled/installed in Ollama before appearing
+
+        API Endpoint:
+            GET http://localhost:11434/api/tags
         """
         try:
             response = requests.get("http://localhost:11434/api/tags", timeout=5)
@@ -568,11 +814,27 @@ class LLMHandler:
             return []
 
     def get_available_tools(self) -> Dict[str, str]:
-        """
-        Get list of available tools and their descriptions.
+        """Get mapping of available tools and their descriptions.
+
+        Provides a convenient way to inspect what tools are configured
+        for the LLM handler, useful for debugging and UI display.
 
         Returns:
-            dict: Dictionary of tool names and descriptions.
+            Dict[str, str]: Mapping of tool names to their descriptions
+                - Keys: Tool function names (e.g., "find_similar_tickets")
+                - Values: Human-readable descriptions of tool functionality
+                Empty dict if no tools configured or names missing
+
+        Example:
+            >>> tools = handler.get_available_tools()
+            >>> for name, desc in tools.items():
+            ...     print(f"{name}: {desc}")
+            >>> # find_similar_tickets: Search for similar support tickets...
+
+        Note:
+            - Tools without names are skipped with warning
+            - Descriptions come from tool configuration
+            - Used for validation and user interface display
         """
         tool_descriptions: Dict[str, str] = {}
         for tool in self.tools:
