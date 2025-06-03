@@ -92,22 +92,6 @@ https://github.com/user-attachments/assets/136486f6-6d2f-45b3-8e92-ca87678fcaa9
    cp exemple.env .env
    ```
 
-4. **Set up Neo4j schema**
-
-   ```cypher
-   // Create vector index for ticket similarity search
-   CREATE VECTOR INDEX ticketsTitleDescription FOR (t:Ticket) ON (t.embedding)
-   OPTIONS {indexConfig: {
-       `vector.dimensions`: 384,
-       `vector.similarity_function`: 'cosine'
-   }}
-
-   // Create constraints
-   CREATE CONSTRAINT ticket_id IF NOT EXISTS FOR (t:Ticket) REQUIRE t.ticketId IS UNIQUE;
-   CREATE CONSTRAINT comment_id IF NOT EXISTS FOR (c:Comment) REQUIRE c.commentId IS UNIQUE;
-   CREATE CONSTRAINT user_id IF NOT EXISTS FOR (u:User) REQUIRE u.userId IS UNIQUE;
-   ```
-
 ### Configuration
 
 ```python
