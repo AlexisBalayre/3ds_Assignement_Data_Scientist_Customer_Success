@@ -100,62 +100,7 @@ def compute_embeddings_from_dataframe(
 
     Returns:
         pd.DataFrame: Copy of input DataFrame with additional 'embedding' column
-            containing List[float] vectors.
-
-    Example:
-        >>> # Setup
-        >>> config = Config()
-        >>> client = get_embedding_model(config)
-        >>> df = pd.DataFrame({
-        ...     'id': [1, 2, 3],
-        ...     'title': ['Login Error', 'Password Reset', 'API Timeout'],
-        ...     'description': ['Cannot access dashboard', 'Forgot password', 'API calls failing'],
-        ...     'category': ['ACCESS', 'ACCOUNT', 'INTEGRATION']
-        ... })
-
-        >>> # Generate embeddings from title and description
-        >>> df_with_embeddings = compute_embeddings_from_dataframe(
-        ...     embedding_model=client,
-        ...     df=df,
-        ...     text_columns=['title', 'description']
-        ... )
-
-        >>> # Examine results
-        >>> print(df_with_embeddings.columns)  # ['id', 'title', 'description', 'category', 'embedding']
-        >>> print(len(df_with_embeddings.iloc[0]['embedding']))  # e.g., 384
-
-        >>> # Save for later use
-        >>> df_with_embeddings.to_parquet('embeddings.parquet')
-
-    Processing Details:
-        - Text columns are converted to strings and joined with spaces
-        - NaN/null values are converted to string 'nan' during concatenation
-        - Embedding computation is applied row-wise using pandas.apply()
-        - Intermediate 'combined_text' column is created and removed automatically
-        - Original DataFrame structure and data types are preserved
-
-    Performance Optimization:
-        - Use pre-initialized embedding_model for batch operations
-        - Consider chunking very large DataFrames (>100k rows) for memory management
-        - Process in parallel using multiprocessing for extremely large datasets
-        - Monitor memory usage as embeddings can be memory-intensive
-
-    Memory Considerations:
-        - Each embedding typically uses 1.5-6KB depending on model dimensions
-        - 100k records with 384-dim embeddings ≈ 150-600MB additional memory
-        - Consider saving to disk incrementally for very large datasets
-
-    Integration Examples:
-        >>> # For vector database storage
-        >>> df_embedded = compute_embeddings_from_dataframe(client, df, ['title', 'description'])
-        >>> # Store in Pinecone, Weaviate, or Neo4j vector index
-
-        >>> # For similarity search
-        >>> query_embedding = compute_embedding("user login problems", client)
-        >>> similarities = df_embedded['embedding'].apply(
-        ...     lambda emb: np.dot(query_embedding, emb)
-        ... )
-        >>> most_similar = df_embedded.iloc[similarities.argmax()]
+            containing List[float] vectors
     """
     df = df.copy()
     logger.info("Combining columns %s into 'combined_text'", text_columns)
