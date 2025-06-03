@@ -1,0 +1,52 @@
+flowchart TD
+    A[User Sends Question] --> B[Initial LLM Assessment]
+    
+    B --> C{Needs Knowledge Base?}
+    
+    %% Analysis Path - The Critical Part
+    C -->|Yes - Technical Issue| E[LLM Structured Analysis]
+    
+    %% Detailed Analysis Steps
+    E --> F{Is Related to Aura?}
+
+    F -->|Yes| G[Identify Ticket Category]
+    F -->|No| H[Skip Knowledge Search]
+
+    G --> I[Generate Title & Description]
+    H --> U[Stream LLM Basic Answer]
+    I --> J[Compute Embeddings]
+    
+    J --> K[Graph Traversal & Vector Similarity Search]
+    K --> L{Similar Tickets Found?}
+    
+    L -->|Yes| M[Retrieve Solution Context]
+    L -->|No| O[No Solutions Available]
+    
+    M --> R[Stream LLM Context-Aware Answer + Sources]
+    O --> U
+    
+    %% Direct Path
+    C -->|No - General Question| H
+    
+    %% Final Output
+    R --> END[Response Complete]
+    U --> END
+    
+    %% Styling
+    classDef startNode fill:#e3f2fd,stroke:#1976d2,stroke-width:3px
+    classDef decision fill:#fff8e1,stroke:#f57f17,stroke-width:2px
+    classDef analysisNode fill:#ffebee,stroke:#c62828,stroke-width:3px
+    classDef toolProcess fill:#e8f5e8,stroke:#388e3c,stroke-width:2px
+    classDef response fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
+    classDef output fill:#e0f2f1,stroke:#00796b,stroke-width:2px
+    classDef endNode fill:#e1f5fe,stroke:#0277bd,stroke-width:3px
+    classDef skipNode fill:#f5f5f5,stroke:#757575,stroke-width:2px
+    
+    class A startNode
+    class B,T,P,Q,N response
+    class C,F,L decision
+    class D,E,G,I analysisNode
+    class J,K,M toolProcess
+    class R,S,U output
+    class H,O skipNode
+    class END endNode
