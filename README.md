@@ -211,8 +211,8 @@ _[Shows source tickets with similarity scores]_
 ├── app.py                     # Application entry point
 ├── chatbot.py                  # Streamlit chat interface
 ├── llm_handler.py             # LLM operations and tool integration
-├── knowledge_graph_retriever.py # Neo4j similarity search
-├── compute_embedding.py       # Text embedding generation
+├── knowledge_graph_retriever.py # Neo4j data retriever handler with similarity search
+├── compute_embedding.py       # Text embedding generation handler
 ├── config.py                  # Configuration settings
 ├── pyproject.toml             # Poetry dependencies and project config
 ├── poetry.lock               # Poetry lock file for reproducible builds
