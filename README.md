@@ -4,14 +4,6 @@ A support chatbot that leverages local LLMs, vector similarity search, and knowl
 
 https://github.com/user-attachments/assets/136486f6-6d2f-45b3-8e92-ca87678fcaa9
 
-## 🌟 Features
-
-- **Local LLM Integration**: Uses Ollama for privacy-preserving AI inference
-- **Vector Similarity Search**: Finds semantically similar past tickets using embeddings
-- **Knowledge Graph**: Neo4j-powered ticket relationship management
-- **Interactive Chat Interface**: Streamlit-based web application
-- **Tool Integration**: LLM can intelligently decide when to search for similar tickets
-
 ## 🏗️ Architecture
 
 ```
@@ -91,26 +83,6 @@ https://github.com/user-attachments/assets/136486f6-6d2f-45b3-8e92-ca87678fcaa9
    ```bash
    cp exemple.env .env
    ```
-
-### Configuration
-
-```python
-# config.py
-class Config:
-    # Neo4j Configuration
-    neo4j_uri = "bolt://localhost:7687"
-    neo4j_username = "neo4j"
-    neo4j_password = "password"
-    neo4j_database = "neo4j"
-
-    # Ollama Configuration
-    ollama_base_url = "http://localhost:11434/v1"
-    ollama_model = "llama3.2"  # Your chat model
-    ollama_embed_model = "nomic-embed-text"  # Your embedding model
-    ollama_temperature = 0.0 # Lower for factual responses
-    ollama_max_tokens = 1024
-```
-
 ## 💾 Data Setup
 
 ### Neo4j Database Schema Setup
@@ -168,7 +140,7 @@ The project includes Cypher scripts to set up the complete database schema and l
    // Copy and paste the contents of datasets/upload_embeddings.cypher
    ```
 
-### Expected Data Schema
+### Data Schema
 
 The database follows this entity relationship structure:
 
