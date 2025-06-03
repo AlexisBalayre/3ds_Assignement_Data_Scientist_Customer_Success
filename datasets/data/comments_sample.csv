@@ -1,30 +1,84 @@
 commentId,content,creationDate,isSolution,ticketId,authorUserId,articleId
-cmt_001,Hi Marie! I can help you with the login issue. Please try clearing your browser cache and cookies first. Let me know if this doesn't resolve the problem.,2024-05-20 09:30:00,false,tkt_001,usr_002,doc_002
-cmt_002,Thanks Jean! I cleared the cache but still having the same issue. The login page loads but clicking Sign In just refreshes the page.,2024-05-20 10:15:00,false,tkt_001,usr_001,
-cmt_003,Please try using an incognito/private browser window. This will help us determine if it's a browser extension conflict.,2024-05-20 10:20:00,false,tkt_001,usr_002,
-cmt_004,That worked! I can now login in incognito mode. What should I do to fix my regular browser?,2024-05-20 10:25:00,false,tkt_001,usr_001,
-cmt_005,Great! The issue is likely a browser extension interfering with authentication. Try disabling extensions one by one to identify the culprit. For now you can continue using incognito mode.,2024-05-20 10:30:00,true,tkt_001,usr_002,
-cmt_006,Sarah thanks for reporting this. I can see the knowledge base has some outdated CATIA information. I'm updating it now with the latest V6 documentation.,2024-05-21 15:00:00,false,tkt_002,usr_005,
-cmt_007,I've updated the knowledge base. Can you test asking the same questions now and let me know if the responses are accurate?,2024-05-21 16:30:00,false,tkt_002,usr_005,
-cmt_008,Much better! Aura is now providing current V6 information. Thanks for the quick fix!,2024-05-21 17:00:00,false,tkt_002,usr_003,
-cmt_009,Perfect! I'm marking this as resolved. The knowledge base has been updated with current CATIA V6 documentation.,2024-05-21 17:05:00,true,tkt_002,usr_005,doc_003
-cmt_010,Thanks for the SIMULIA integration request Carlos. This is a great idea! I'm adding it to our development roadmap. We'll evaluate the technical requirements and provide an update within 2 weeks.,2024-05-22 12:00:00,false,tkt_003,usr_008,
-cmt_011,Lisa I can see the performance issue you're experiencing. We're currently investigating server load during peak hours. Can you tell me what time you typically use Aura?,2024-05-23 09:00:00,false,tkt_004,usr_005,doc_009
-cmt_012,Usually between 9-11 AM and 2-4 PM when our team is most active. The slowness is really impacting our work.,2024-05-23 09:15:00,false,tkt_004,usr_007,
-cmt_013,Those are exactly our peak hours. I've implemented load balancing to distribute traffic better. Can you test now and let me know if performance has improved?,2024-05-23 14:00:00,false,tkt_004,usr_005,
-cmt_014,Yes! Much faster now. Responses are back to normal speed. Thank you!,2024-05-23 14:30:00,false,tkt_004,usr_007,
-cmt_015,Excellent! Load balancing solution has resolved the performance issue during peak hours.,2024-05-23 14:35:00,true,tkt_004,usr_005,
-cmt_016,Sophie the directory service integration was temporarily down. I've restored the connection and tested employee lookup functionality. Please try again.,2024-05-24 16:45:00,true,tkt_005,usr_002,
-cmt_017,Works perfectly now! I can search for employees and get their contact information. Thanks!,2024-05-24 17:00:00,false,tkt_005,usr_009,
-cmt_018,Carlos I can schedule a training session for your DELMIA team. What's your preferred time and how many team members need training?,2024-05-25 11:00:00,false,tkt_006,usr_008,doc_008
-cmt_019,We have 8 team members. Would next Tuesday at 2 PM work? We'd like to focus on manufacturing-specific queries.,2024-05-25 11:30:00,false,tkt_006,usr_004,
-cmt_020,Perfect! I'll set up a training session for Tuesday 2 PM focusing on manufacturing workflows and DELMIA-specific questions.,2024-05-25 12:00:00,false,tkt_006,usr_008,
-cmt_021,Marie I've added better entity recognition for department names. Aura should now properly understand organizational units like 'CATIA Development'. Please test and let me know!,2024-05-26 14:00:00,true,tkt_007,usr_005,
-cmt_022,Great improvement! Aura now gives relevant department-specific information when I mention our team.,2024-05-26 14:30:00,false,tkt_007,usr_001,
-cmt_023,Sarah I'm looking into the mobile browser issue. Can you tell me which browser and iOS version you're using?,2024-05-27 10:00:00,false,tkt_008,usr_002,doc_005
-cmt_024,I'm using Safari on iOS 17.4. Chrome on mobile has the same issue.,2024-05-27 10:15:00,false,tkt_008,usr_003,
-cmt_025,Lisa thanks for the voice command suggestion! This is an interesting feature that would require significant development. I'm adding it to our enhancement backlog for evaluation.,2024-05-28 16:00:00,false,tkt_009,usr_008,
-cmt_026,Sophie I've identified and fixed the response truncation issue. Longer technical responses should now display completely. Can you test with a complex query?,2024-05-29 12:00:00,true,tkt_010,usr_005,
-cmt_027,Working great! I asked about SIMULIA workflow integration and got a complete detailed response.,2024-05-29 12:30:00,false,tkt_010,usr_009,
-cmt_028,Thomas here are the direct links to Aura documentation. I've also added these to the quick links section of the intranet.,2024-05-29 15:00:00,true,tkt_011,usr_002,doc_001
-cmt_029,David the Outlook integration is a complex feature that would require API development. I'm scheduling a technical review meeting to assess feasibility.,2024-05-30 09:00:00,false,tkt_012,usr_008,doc_007
+cmt_001,Hi Marie! I can help you with the login issue. Please try clearing your browser cache and cookies first. Let me know if this doesn't resolve the problem.,2024-05-20 09:30:00,False,tkt_001,usr_002,doc_002
+cmt_002,Thanks Jean! I cleared the cache but still having the same issue. The login page loads but clicking Sign In just refreshes the page.,2024-05-20 10:15:00,False,tkt_001,usr_001,
+cmt_003,Please try using an incognito/private browser window. This will help us determine if it's a browser extension conflict.,2024-05-20 10:20:00,False,tkt_001,usr_002,
+cmt_004,That worked! I can now login in incognito mode. What should I do to fix my regular browser?,2024-05-20 10:25:00,False,tkt_001,usr_001,
+cmt_005,Great! The issue is likely a browser extension interfering with authentication. Try disabling extensions one by one to identify the culprit. For now you can continue using incognito mode.,2024-05-20 10:30:00,True,tkt_001,usr_002,
+cmt_006,Sarah thanks for reporting this. I can see the knowledge base has some outdated CATIA information. I'm updating it now with the latest V6 documentation.,2024-05-21 15:00:00,False,tkt_002,usr_005,
+cmt_007,I've updated the knowledge base. Can you test asking the same questions now and let me know if the responses are accurate?,2024-05-21 16:30:00,False,tkt_002,usr_005,
+cmt_008,Much better! Aura is now providing current V6 information. Thanks for the quick fix!,2024-05-21 17:00:00,False,tkt_002,usr_003,
+cmt_009,Perfect! I'm marking this as resolved. The knowledge base has been updated with current CATIA V6 documentation.,2024-05-21 17:05:00,True,tkt_002,usr_005,doc_003
+cmt_010,Thanks for the SIMULIA integration request Carlos. This is a great idea! I'm adding it to our development roadmap. We'll evaluate the technical requirements and provide an update within 2 weeks.,2024-05-22 12:00:00,False,tkt_003,usr_008,
+cmt_011,Lisa I can see the performance issue you're experiencing. We're currently investigating server load during peak hours. Can you tell me what time you typically use Aura?,2024-05-23 09:00:00,False,tkt_004,usr_005,doc_009
+cmt_012,Usually between 9-11 AM and 2-4 PM when our team is most active. The slowness is really impacting our work.,2024-05-23 09:15:00,False,tkt_004,usr_007,
+cmt_013,Those are exactly our peak hours. I've implemented load balancing to distribute traffic better. Can you test now and let me know if performance has improved?,2024-05-23 14:00:00,False,tkt_004,usr_005,
+cmt_014,Yes! Much faster now. Responses are back to normal speed. Thank you!,2024-05-23 14:30:00,False,tkt_004,usr_007,
+cmt_015,Excellent! Load balancing solution has resolved the performance issue during peak hours.,2024-05-23 14:35:00,True,tkt_004,usr_005,
+cmt_016,Sophie the directory service integration was temporarily down. I've restored the connection and tested employee lookup functionality. Please try again.,2024-05-24 16:45:00,True,tkt_005,usr_002,
+cmt_017,Works perfectly now! I can search for employees and get their contact information. Thanks!,2024-05-24 17:00:00,False,tkt_005,usr_009,
+cmt_018,Carlos I can schedule a training session for your DELMIA team. What's your preferred time and how many team members need training?,2024-05-25 11:00:00,False,tkt_006,usr_008,doc_008
+cmt_019,We have 8 team members. Would next Tuesday at 2 PM work? We'd like to focus on manufacturing-specific queries.,2024-05-25 11:30:00,False,tkt_006,usr_004,
+cmt_020,Perfect! I'll set up a training session for Tuesday 2 PM focusing on manufacturing workflows and DELMIA-specific questions.,2024-05-25 12:00:00,False,tkt_006,usr_008,
+cmt_021,Marie I've added better entity recognition for department names. Aura should now properly understand organizational units like 'CATIA Development'. Please test and let me know!,2024-05-26 14:00:00,True,tkt_007,usr_005,
+cmt_022,Great improvement! Aura now gives relevant department-specific information when I mention our team.,2024-05-26 14:30:00,False,tkt_007,usr_001,
+cmt_023,Sarah I'm looking into the mobile browser issue. Can you tell me which browser and iOS version you're using?,2024-05-27 10:00:00,False,tkt_008,usr_002,doc_005
+cmt_024,I'm using Safari on iOS 17.4. Chrome on mobile has the same issue.,2024-05-27 10:15:00,False,tkt_008,usr_003,
+cmt_025,Lisa thanks for the voice command suggestion! This is an interesting feature that would require significant development. I'm adding it to our enhancement backlog for evaluation.,2024-05-28 16:00:00,False,tkt_009,usr_008,
+cmt_026,Sophie I've identified and fixed the response truncation issue. Longer technical responses should now display completely. Can you test with a complex query?,2024-05-29 12:00:00,True,tkt_010,usr_005,
+cmt_027,Working great! I asked about SIMULIA workflow integration and got a complete detailed response.,2024-05-29 12:30:00,False,tkt_010,usr_009,
+cmt_028,Thomas here are the direct links to Aura documentation. I've also added these to the quick links section of the intranet.,2024-05-29 15:00:00,True,tkt_011,usr_002,doc_001
+cmt_029,David the Outlook integration is a complex feature that would require API development. I'm scheduling a technical review meeting to assess feasibility.,2024-05-30 09:00:00,False,tkt_012,usr_008,doc_007
+cmt_030,"According to the responses to Bug: topic set by AURA is not persistent, this will be fixed in the next patch release of the 3DSwym service.",2024-05-24 08:15:00,True,tkt_013,usr_009,
+cmt_031,"thanks Marcel  
+
+exactly the answer I was looking for.
+
+May I ask 1 addition question (I hate people asking new question in question 🤣 😉)
+
+What will happen to existing ""New Conversation"" ?",2024-05-24 08:20:00,False,tkt_013,usr_006,
+cmt_032,"The 3DSwym patch has been delivered yesterday. Based on a quick test I conclude:
+
+✅ For new conversations created since the delivery of this patch the auto renaming works as expected again.
+
+➖ Existing conversations labeled as ""New conversation"" are not automatically updated.",2024-05-28 09:00:00,False,tkt_013,usr_009,
+cmt_033,"Kapil, interesting question. at least, if you guide (a lot) the question it lead to the correct answer.
+
+Using the prompt with exact title of KB it works:
+    in 3DEXPERIENCE, How to alphabetically sort authorized values of classification attribute using Mask Management for classified items?
+Just one part of the KB title will not work:
+    in 3DEXPERIENCE, How to alphabetically sort authorized values of classification attribute
+
+It sources the correct article regardless, but not always the correct chunk. Maybe tuning the LLM’s confidence threshold could help.",2024-05-29 09:15:00,False,tkt_014,usr_003,
+cmt_034,"Thanks for taking time to reply in details. With some RAG knowledge, I think the right sources were retrieved, but the LLM couldn’t interpret it as the right answer, maybe due to unfamiliarity with DS terminology.",2024-05-29 09:25:00,False,tkt_014,usr_010,
+cmt_035,"Retrieval is done on small chunks, not the full document. The LLM might not see the right chunk even if the source shown to user seems correct. Also, the Lost in the Middle problem is unlikely here but worth noting.",2024-05-29 09:30:00,False,tkt_014,usr_005,
+cmt_036,"Quick slide explanation: Sources shown in UI are full articles, but retrieval is based on chunks. You might see the right article in sources, but the LLM didn’t have access to the right part.",2024-05-29 09:35:00,False,tkt_014,usr_005,
+cmt_037,"Hello Brandon, It takes up to 5 days to replicate the new content from the public tenant to others tenant / service instances. This allows time for moderation, backup, and restore to other service instances.",2024-05-30 10:15:00,False,tkt_015,usr_009,
+cmt_038,"Thanks Pierre, that covers data from the public tenant. But is it also 5 days for content within the user's own tenant? I created a document titled 'Quintiq AWS & Containers' but AURA could not find it.",2024-05-30 10:20:00,False,tkt_015,usr_007,
+cmt_039,"Pierre - Oh, I think I understand now. In my case, I'm referring to a tenant that is neither the DS internal nor public one. Are these team-specific tenants not available as AURA data sources?",2024-05-30 10:25:00,False,tkt_015,usr_007,
+cmt_040,"Hello,
+
+As of today, retrieval is done on:
+
+- Swym data of the current user tenant on a given 3DEXPERIENCE platform instance (user security applied)
+- Swym data from the public tenant on https://r1132100503382-eu1-3dswym.3dexperience.3ds.com/home
+- User documentation
+- A subset of KB (1000 entries)",2024-05-30 10:30:00,True,tkt_015,usr_009,
+cmt_041,"I've seen it work with PDFs, no other format for now. You can find more info on sources here: *Understanding AURA: Agents, RAG, and What’s Really Happening* (doc)",2024-06-02 10:35:00,False,tkt_016,usr_009,
+cmt_042,"Thank you Cyril. I have done some testing on information located in PDF files, not really successful, but maybe my use cases were too specific (or not enough).",2024-06-02 10:40:00,False,tkt_016,usr_008,
+cmt_043,"I think it's an issue with RAG in general. It's not great today – it often picks the wrong sources, old sources, or unrelated ones. This is supposedly getting better in FD03, stay tuned!",2024-06-02 10:45:00,False,tkt_016,usr_002,
+cmt_044,"Because AURA is mainly RAG-based, it performs a vector similarity search to retrieve documents matching your query. It then inserts these documents and your query into a predefined prompt. This rigid structure limits the model's ability to follow complex instructions unless the intent detection correctly routes it to a dedicated agent like 'chitchat'.",2024-06-02 17:40:00,False,tkt_017,usr_009,
+cmt_045,"Gawen, thanks for this technical answer. What I don't understand is: Why didn't the intent detection trigger the correct agent?",2024-06-02 17:45:00,False,tkt_017,usr_005,
+cmt_046,Still not determined yet - discussion at the XCOM level,2024-06-03 14:10:00,True,tkt_018,usr_009,
+cmt_047,"Hello Francis, did you ask other things before the one related to translation inside your conversation?
+
+I asked the same question and got a better result, though the conjugation seemed off.",2024-06-03 15:05:00,False,tkt_019,usr_002,
+cmt_048,It was an existing Aura conversation titled 'Translation' that I had used before to translate from French to English: see screenshot.,2024-06-03 15:10:00,False,tkt_019,usr_006,
+cmt_049,"Thanks! Your issue likely stems from the rephrased query step based on conversation memory. This step can sometimes fail and produce strange results. Improvements are coming in future releases. For now, starting a new conversation can help avoid this issue.",2024-06-03 15:15:00,True,tkt_019,usr_009,
+cmt_050,"About the 'funny' answer from the 'chitchat' agent, I 100% agree! If you're not answering the question correctly, don't try to be humorous. It's frustrating and unprofessional.",2024-06-03 16:40:00,False,tkt_020,usr_007,
+cmt_051,"As a general comment, I find RAG reliability has declined since the chit chat module was introduced. Even well-documented queries often fail to return relevant results.",2024-06-03 16:50:00,False,tkt_020,usr_005,
+cmt_052,"I would like to see an ability to create a custom Aura agent, directed only to specific community/communities and certain tagged content. That way, source control is improved and 3DSwym tagging becomes a powerful tool in RAG configuration.",2024-06-03 18:10:00,False,tkt_021,usr_006,
+cmt_053,This is a difference between Generative AI and a search engine. AI/CS are probabilistic in nature and there is never a guarantee that the same question produces the same result.,2024-06-03 19:05:00,False,tkt_022,usr_007,
+cmt_054,"Sean - I can understand probabilistic output with multiple sources, but for SweeT there is a single syntax and unified reference, so I would expect consistent behavior.",2024-06-03 19:10:00,False,tkt_022,usr_008,
+cmt_055,"Yes, but the latest reasoning models are improving fast. Some combine search, RAG, and LLMs with memory and self-learning. It will be challenging for Aura to keep pace without significant investment.",2024-06-03 19:20:00,False,tkt_022,usr_006,
+cmt_056,"The information retrieved here comes from content of the Public User Advocacy communities, which is a datasource available to AURA in every environment/tenant, just like User Documentation. There is no data breach or security issue—this is totally expected.",2024-06-03 20:05:00,True,tkt_023,usr_009,
+cmt_057,"Thanks for the quick response, Axel! I'm glad to know this is a feature and not a bug 🙂",2024-06-03 20:10:00,False,tkt_023,usr_010,
