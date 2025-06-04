@@ -27,7 +27,7 @@ https://github.com/user-attachments/assets/136486f6-6d2f-45b3-8e92-ca87678fcaa9
 └─────────────────┘    └──────────────────┘
 ```
 
-A more detailed workflow flowchart diagram can be found in the [docs/1. Analysis/knowledge_graph_architecture_diagram.png](docs/1.%20Analysis/main_workflow_diagram.mmd) file.
+A more detailed workflow flowchart diagram can be found in the [docs/1. Analysis/main_workflow_diagram.mmd](docs/1.%20Analysis/main_workflow_diagram.mmd) file.
 
 ## 📋 Prerequisites
 
@@ -161,7 +161,9 @@ User ──SUBMITS──► Ticket ──HAS_STATUS──► Status
                 REFERENCED_BY◄──Comment
 ```
 
-A more detailed architecture diagram can be found in the [docs/1. Analysis/knowledge_graph_architecture_diagram.png](docs/1.%20Analysis/knowledge_graph_architecture_diagram.mmd) file.
+A more detailed architecture diagram can be found in the [docs/1. Analysis/knowledge_graph_architecture_diagram.mmd](docs/1.%20Analysis/knowledge_graph_architecture_diagram.mmd) file.
+
+The graph traversal workflow flowchart can be found in the [docs/1. Analysis/graph_traversal_workflow_diagram.mmd](docs/1.%20Analysis/graph_traversal_workflow_diagram.mmd) file.
 
 ## 🎯 Usage
 
